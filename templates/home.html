@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %} Spellingbee {% endblock %}
+{% block content %}
+
+<div id="gameboardcontainer">
+    <h4>Inside the gameboardcontainer</h4>
+This is the session keys
+    <ul>{% for thing in session %}
+        <li>{{thing}}</li>
+        {% endfor %}
+        <p>This is the session data one at a time</p>
+        <li>letters::{{session["letters"]}}</li>
+        <li>"guessed_words::{{session["guessed_words"]}}</li>
+        <li>center_letter::{{session["center_letter"]}}</li>
+        <li>score::{{session["score"]}}</li>
+        <li>total_points::{{session["total_points"]}}</li>
+        <li>rating::{{session["rating"]}}</li>
+    </ul> 
+</div>
+
+<div id="guessformcontainer" class="container">
+    <h4>Inside the guessformcontainer</h4>
+    <h4>Enter a guess below!</h4>
+    <div id="guessformrow" class="row justify-content-left">
+        <div id="guessformcol" class="col-md-5">
+            <form id="guessform" action="#" method="POST">
+        
+                {{form.hidden_tag()}}
+        
+                {% for field in form
+                if field.widget.input_type != 'hidden'%}
+        
+                <div class="form-group">  
+                    {{field.label(class_="text-info font-weight-bold")}}
+                    {{field(class_="form-control")}}
+        
+                    {% for error in field.errors %}
+                    <small class="form-text text-danger">{{error}}</small>
+                    
+                    {% endfor %}
+                </div>
+                    {% endfor %}
+                
+                        <button id="petsubmitbtn" class="btn btn-primary" type="submit">Submit</button>
+                    </form>
+        </div>
+    </div>
+</div>
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<ul id="messagecontainer"></ul>
+
+<p>Thanks for browsing!</p>
+    
+{%endblock%}

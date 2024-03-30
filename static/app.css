@@ -1,0 +1,91 @@
+
+body{
+    background-color: #f7ecf767;
+}
+
+.navbar{
+    background-color:#e2bd16;
+    overflow: hidden;
+   border-bottom: 1px solid black;
+ 
+}
+
+.navbar a{
+    float: left;
+    color:black;
+    text-align:center;
+    padding: 14px;
+    text-decoration: none;
+    font-size: 24px;
+}
+
+.navbar a:hover{
+    text-decoration: underline;
+    color: black;
+
+}
+
+#firstnametag{
+    color:green;
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: 16px;
+    
+}
+
+#lastnametag{
+    color:orangered;
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: 16px;
+}
+
+#imageurltag{
+    font-weight: bold;
+    text-decoration: underline;
+    color: cornflowerblue;
+    font-size: 16px;
+}
+
+#basewelcome{
+    font-size: 34px;
+    text-decoration: underline;
+    text-decoration-color:#e2bd16;
+}
+    
+.success{
+    color: green;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.error{
+    color:red;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
+}
+
+#cupcakeformcontainer{
+    position: relative;
+    right: 28vw;
+}
+
+/* #cupcakediv{
+    position: relative;
+    left: 20vw;
+    bottom: 40vh;
+} */
+
+/* .tinyfont{
+    font-size:8px ;
+}
+
+.smallfont{
+    font-size:12px ;
+}
+
+
+
+#peteditformcontainer{
+    position: relative;
+    bottom: 425px;
+    left:200px
+} */
