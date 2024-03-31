@@ -4,7 +4,46 @@
 
 <div id="gameboardcontainer">
     <h4>Inside the gameboardcontainer</h4>
+    <h1> letters:{{session["letters"]}} center_letter={{session["center_letter"]}}</h1>
+    <div id="guessformcontainer" class="container">
+        <div id="guessformrow" class="row justify-content-left">
+            <div id="guessformcol" class="col-md-5">
+                <form id="guessform" action="#" method="POST">
+            
+                    {{form.hidden_tag()}}
+            
+                    {% for field in form
+                    if field.widget.input_type != 'hidden'%}
+            
+                    <div class="form-group">  
+                        {{field.label(class_="text-info font-weight-bold")}}
+                        {{field(class_="form-control-lg")}}
+            
+                        {% for error in field.errors %}
+                        <small class="form-text text-danger">{{error}}</small>
+                        
+                        {% endfor %}
+                    </div>
+                        {% endfor %}
+                    
+                            <button id="petsubmitbtn" class="btn btn-primary" type="submit">Submit</button>
+                        </form>
+            </div>
+        </div>
+        <svg xmlns="http://www.w3.org/2000/svg" id="HEX" class="hive" x="0" y="0" version="1.1" viewBox="0 0 499.772 499.772" width="175" height="175" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs">
+            <path d="M492.692 223.646 394.345 52.979a53.123 53.123 0 0 0-46.08-26.667H151.572a53.12 53.12 0 0 0-46.08 26.027L7.145 223.006a53.333 53.333 0 0 0 0 53.333l98.347 170.667a53.332 53.332 0 0 0 46.08 26.453h196.693a53.334 53.334 0 0 0 46.08-25.813l98.347-170.667a53.76 53.76 0 0 0 0-53.333z" fill="rgba(238, 189, 22, 1)"></path>
+            <text x="177" y="310" class="small text-dark">{{session["center_letter"]}}</text>
+        </svg>
+
+
+
+    </div>
+</div>
+
+
+
 This is the session keys
+    <h1></h1>
     <ul>{% for thing in session %}
         <li>{{thing}}</li>
         {% endfor %}
@@ -16,45 +55,9 @@ This is the session keys
         <li>total_points::{{session["total_points"]}}</li>
         <li>rating::{{session["rating"]}}</li>
     </ul> 
-</div>
 
-<div id="guessformcontainer" class="container">
-    <h4>Inside the guessformcontainer</h4>
-    <h4>Enter a guess below!</h4>
-    <div id="guessformrow" class="row justify-content-left">
-        <div id="guessformcol" class="col-md-5">
-            <form id="guessform" action="#" method="POST">
+
         
-                {{form.hidden_tag()}}
-        
-                {% for field in form
-                if field.widget.input_type != 'hidden'%}
-        
-                <div class="form-group">  
-                    {{field.label(class_="text-info font-weight-bold")}}
-                    {{field(class_="form-control")}}
-        
-                    {% for error in field.errors %}
-                    <small class="form-text text-danger">{{error}}</small>
-                    
-                    {% endfor %}
-                </div>
-                    {% endfor %}
-                
-                        <button id="petsubmitbtn" class="btn btn-primary" type="submit">Submit</button>
-                    </form>
-        </div>
-    </div>
-</div>
-        
-
-
-
-
-
-
-
-
 
 
 

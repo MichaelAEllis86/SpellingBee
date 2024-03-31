@@ -49,11 +49,13 @@ class Game(db.Model):
 
     def __repr__(self):
         g=self
-        return f"<game id={g.id} created_at={g.created_at} rating={g.rating} words_played{g.words_played} pangrams={g.pangrams} letters={g.letters} center_letter={g.center_letter} user_id={g.user_id} "
+        return f"<game id={g.id} created_at={g.created_at} rating={g.rating} letters={g.letters} center_letter={g.center_letter} guessed_words={g.guessed_words} all_valid_words={g.all_valid_words} num_words={g.num_words} num_valid_words={g.num_valid_words} valid_pangrams={g.valid_pangrams} guessed_pangrams={g.guessed_pangrams} score={g.score} total_points={g.total_points} user_id={g.user_id} "
+
+
 
     def format_date(self):
 
-        """This function can be used to format the post creation date. It formats from the datetime obj created in the "created_at" column to a "friendly" date string that 
+        """This function can be used to format the game creation date. It formats from the datetime obj created in the "created_at" column to a "friendly" date string that 
         displays the date & time in the following format Example: April 15th, 2024 at 3:02 PM """
 
         months={1:"January", 2:"February", 3:"March", 4:"April", 5:"May", 6:"June", 7:"July", 8:"August", 9:"September", 10:"October", 11:"November", 12:"December"}
@@ -70,12 +72,18 @@ class Game(db.Model):
     def serialize_game(self):
         return {
             "id": self.id,
-            "created_at": self.created_at,
+            "created_at": self.format_date(),
             "rating": self.rating,
-            "words_played":self.words_played,
-            "pangrams":self.pangrams,
             "letters":self.letters,
             "center_letter":self.center_letter,
+            "guessed_words":self.guessed_words,
+            "all_valid_words":self.all_valid_words,
+            "num_words":self.num_words,
+            "num_valid_words":self.num_valid_words,
+            "valid_pangrams":self.valid_pangrams,
+            "guessed_pangrams":self.guessed_pangrams,
+            "score":self.score,
+            "total_points":self.total_points,
             "user_id":self.user_id
             }
     
@@ -90,16 +98,34 @@ class Game(db.Model):
     rating=db.Column(db.String(20),
                      nullable=False,
                      default="Beginner")
-    words_played=db.Column(db.ARRAY(db.Text),
-                           nullable=False,
-                           default=[])
-    pangrams=db.Column(db.ARRAY(db.Text),
-                           nullable=False,
-                           default=[])
     letters=db.Column(db.String(7),
                          nullable=False,)
     center_letter=db.Column(db.String(1),
                          nullable=False,)
+    guessed_words=db.Column(db.ARRAY(db.Text),
+                           nullable=False,
+                           default=[])
+    all_valid_words=db.Column(db.ARRAY(db.Text),
+                           nullable=False,
+                           default=[])
+    num_words=db.Column(db.Integer,
+                            nullable=False,
+                            default=0)
+    num_valid_words=db.Column(db.Integer,
+                               nullable=False,
+                            default=0)
+    valid_pangrams=db.Column(db.ARRAY(db.Text),
+                           nullable=False,
+                           default=[])
+    guessed_pangrams=db.Column(db.ARRAY(db.Text),
+                           nullable=False,
+                           default=[])
+    score=db.Column(db.Integer,
+                    nullable=False,
+                    default=0)
+    total_points=db.Column(db.Integer,
+                    nullable=False,
+                    default=0)
     user_id=db.Column(db.Integer, db.ForeignKey('users.id'))
     
 

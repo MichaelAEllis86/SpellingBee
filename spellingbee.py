@@ -25,7 +25,10 @@ class SpellingBee():
         self.center_letter=self.select_center_letter()
         self.all_valid_words=self.get_all_valid_words()
         self.total_points=self.get_total_points()
-        self.pangrams=self.find_all_pangrams()
+        self.valid_pangrams=self.find_all_pangrams()
+        self.guessed_pangrams=[]
+        self.num_words=len(self.guessed_words)
+        self.num_valid_words=len(self.all_valid_words)
         
 
     def read_dict(self, dict_path):

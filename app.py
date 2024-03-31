@@ -3,8 +3,8 @@ from flask import Flask, jsonify, request, render_template, redirect, flash, ses
 from flask_debugtoolbar import DebugToolbarExtension
 from spellingbee import SpellingBee
 from models import db, connect_db, User,Game
-# from flask_sqlalchemy import SQLAlchemy
-from form import Guessform
+from flask_sqlalchemy import SQLAlchemy
+from form import Guessform, Userform
 
 app=Flask(__name__)
 app.app_context().push()
@@ -21,19 +21,26 @@ app.config['SQLALCHEMY_ECHO']= True
 app.config['SECRET_KEY']="oh-so-secret"
 debug=DebugToolbarExtension(app)
 
+connect_db(app)
+
 #helpers functions, move these later maybe?
 def clear__all_sessions():
     "used to clear the session of all game data so the user can start a new game."
-    session["letters"]="empty"
-    session["guessed_words"]="empty"
-    session["center_letter"]="empty"
-    session["score"]="empty"
-    session["all_valid_words"]="empty"
-    session["total_points"]="empty"
     session["rating"]="empty"
-    session["pangrams"]="empty"
+    session["letters"]="empty"
+    session["center_letter"]="empty"
+    session["guessed_words"]="empty"
+    session["all_valid_words"]="empty"
+    session["num_words"]="empty"
+    session["num_valid_words"]="empty"
+    session["valid_pangrams"]="empty"
+    session["guessed_pangrams"]="empty"
+    session["score"]="empty"
+    session["total_points"]="empty"
+    
 
 def evaluate_rating(num_of_points, total_num_points):
+        """Ranks are based on a percentage of possible points in a puzzle."""
         percentage_score=num_of_points/total_num_points
         if percentage_score >= 0.9:
             rating="Genius"
@@ -54,7 +61,7 @@ def evaluate_rating(num_of_points, total_num_points):
             rating="Good"
             return rating
         elif percentage_score < 0.4 and percentage_score >=0.3:
-            rating="moving up"
+            rating="Moving up"
             return rating
         elif percentage_score < 0.3 and percentage_score >=0.2:
             rating="Good start"
@@ -129,15 +136,61 @@ def generate_and_show_game():
     else:session["rating"]=session["rating"]
     print(f"here is session rating {session['rating']}")
 
-    if session.get("pangrams","empty") =="empty":
-        session["pangrams"]=game.pangrams
-    else:session["pangrams"]=session["pangrams"]
-    print(f"here is session pangrams {session['pangrams']}")
-    print(f"here is the game.pangrams {game.pangrams}")
-    print(f"here is the session--->{session}")
+    if session.get("valid_pangrams","empty") =="empty":
+        session["valid_pangrams"]=game.valid_pangrams
+    else:session["valid_pangrams"]=session["valid_pangrams"]
+    print(f"here is session valid_pangrams {session['valid_pangrams']}")
+    print(f"here is the game.valid_pangrams {game.valid_pangrams}")
 
-  
+    if session.get("guessed_pangrams","empty") =="empty":
+        session["guessed_pangrams"]=game.guessed_pangrams
+    else:session["guessed_pangrams"]=session["guessed_pangrams"]
+    print(f"here is session guessed_pangrams {session['guessed_pangrams']}")
+    print(f"here is the game.guessed_pangrams {game.guessed_pangrams}")
+
+    if session.get("num_words","empty") =="empty":
+        session["num_words"]=game.num_words
+    else:session["num_words"]=session["num_words"]
+    print(f"here is session num_words {session['num_words']}")
+    print(f"here is the game.num_words {game.num_words}")
+
+    if session.get("num_valid_words","empty") =="empty":
+        session["num_valid_words"]=game.num_valid_words
+    else:session["num_valid_words"]=session["num_valid_words"]
+    print(f"here is session num_valid_words {session['num_valid_words']}")
+    print(f"here is the game.num_valid_words {game.num_valid_words}")
+
+
     return render_template("home.html", form=form, game=game)
+
+
+
+@app.route("/spellingbee/users", methods=["GET", "POST"])
+def show_and_add_users():
+   form=Userform()
+   users=User.query.all()
+
+   if form.validate_on_submit():
+       username=form.username.data
+       image=form.image.data
+       print(f"the new user form data is username={username} image={image}")
+       new_user=User(username=username, image=image)
+       db.session.add(new_user)
+       db.session.commit()
+       flash("New User created!!")
+       flash(f"your new user is {new_user.username}, with an id of {new_user.id}", "success")
+
+   return render_template("userlist.html",users=users, form=form)
+
+@app.route("/spellingbee/users/<user_id>")
+def show_user_detail(user_id):
+    int_user_id=int(user_id)
+    user=User.query.get_or_404(int_user_id)
+    games=user.games
+    return render_template("userdetail.html", user=user,games=games)
+
+
+
 
 # @app.route("/showcupcakes")
 # def show_cupcakes_page():

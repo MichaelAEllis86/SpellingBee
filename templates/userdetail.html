@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+{% block title %} Spellingbee User Hive {% endblock %}
+{% block content %}
+<h2>Bee Details!</h2>
+
+
+<div id="profilecontainer">
+    <img class="img-thumbnail userprofileimg"  src="{{user.image}}" alt="User image">
+    <h4 class=text-info font-italic>{{user.username}}</h4>
+</div>
+
+<div id="gamehistorycontainer">
+    <h4 class=text-warning gamehistory font-italic>{{user.username}}'s Game History</h4>
+    <table id="gamehistorytable" class="table table-hover table-sm table-bordered">
+        <thead id="gamehistorythead">
+            <tr><th class="gamehistorycol" scope="col">Game id:</th>
+                <th  class="gamehistorycol" scope="col">Created at:</th>
+                <th  class="gamehistorycol" scope="col">Rating:</th>
+                <th  class="gamehistorycol" scope="col">Letters:</th>
+                <th  class="gamehistorycol" scope="col">Center Letter:</th>
+                <th  class="gamehistorycol"scope="col">words_played:</th>
+                <th  class="gamehistorycol"scope="col">Number of Words played:</th>
+                <th  class="gamehistorycol"scope="col">Total number of findable words:</th>
+                <th  class="gamehistorycol"scope="col">Wounded bees  &#128029 (Aka the words remaing to be found):</th>
+                <th  class="gamehistorycol"scope="col">Pangrams Possible:</th>
+                <th  class="gamehistorycol"scope="col">Pangrams Found:</th>
+                <th  class="gamehistorycol"scope="col">score:</th>
+                <th  class="gamehistorycol"scope="col">Max Point Value:</th>
+
+                
+                <th  class="gamehistorycol"scope="col">Replay me! Coming Soon!!!:</th>
+            </tr> 
+        </thead>
+        <tbody>
+            {% for game in games %}
+            {% if game.rating =="Genius" %}
+            <tr class="rowgenius">
+                <th scope="row">{{game.id}}</th>
+                <td>{{game.format_date()}}</td>
+                <td>&#127891 &#127891{{game.rating}}</td>
+                <td>{{game.letters}}</td>
+                <td>{{game.center_letter}}</td>
+                <td>{{game.guessed_words}}</td>
+                <td>{{game.num_words}}</td>
+                <td>{{game.num_valid_words}}</td>
+                <td>{{game.num_valid_words-game.num_words}}</td>
+                <td>{{game.valid_pangrams}}</td>
+                <td>{{game.guessed_pangrams}}</td>
+                <td>{{game.score}}</td>
+                <td>{{game.total_points}}</td>
+                
+            </tr>
+            {% elif game.rating =="Amazing" %}
+            <tr class="rowamazing">
+                <th scope="row">{{game.id}}</th>
+                <td>{{game.format_date()}}</td>
+                <td>&#127891{{game.rating}}</td>
+                <td>{{game.letters}}</td>
+                <td>{{game.center_letter}}</td>
+                <td>{{game.guessed_words}}</td>
+                <td>{{game.num_words}}</td>
+                <td>{{game.num_valid_words}}</td>
+                <td>{{game.num_valid_words-game.num_words}}</td>
+                <td>{{game.valid_pangrams}}</td>
+                <td>{{game.guessed_pangrams}}</td>
+                <td>{{game.score}}</td>
+                <td>{{game.total_points}}</td>
+                
+                
+            </tr>
+            {% elif game.rating =="Great" %}
+            <tr class="rowgreat">
+                <th scope="row">{{game.id}}</th>
+                <td>{{game.format_date()}}</td>
+                <td>&#128029 &#128029 &#128029{{game.rating}}</td>
+                <td>{{game.letters}}</td>
+                <td>{{game.center_letter}}</td>
+                <td>{{game.guessed_words}}</td>
+                <td>{{game.num_words}}</td>
+                <td>{{game.num_valid_words}}</td>
+                <td>{{game.num_valid_words-game.num_words}}</td>
+                <td>{{game.valid_pangrams}}</td>
+                <td>{{game.guessed_pangrams}}</td>
+                <td>{{game.score}}</td>
+                <td>{{game.total_points}}</td>
+            </tr>
+            {% elif game.rating =="Nice" %}
+            <tr class="rownice">
+                <th scope="row">{{game.id}}</th>
+                <td>{{game.format_date()}}</td>
+                <td>&#128029 &#128029{{game.rating}}</td>
+                <td>{{game.letters}}</td>
+                <td>{{game.center_letter}}</td>
+                <td>{{game.guessed_words}}</td>
+                <td>{{game.num_words}}</td>
+                <td>{{game.num_valid_words}}</td>
+                <<td>{{game.num_valid_words-game.num_words}}</td>
+                <td>{{game.valid_pangrams}}</td>
+                <td>{{game.guessed_pangrams}}</td>
+                <td>{{game.score}}</td>
+                <td>{{game.total_points}}</td>
+            </tr>
+            {% elif game.rating =="Solid" %}
+            <tr class="rowsolid">
+                <th scope="row">{{game.id}}</th>
+                <td>{{game.format_date()}}</td>
+                <td>&#128029{{game.rating}}</td>
+                <td>{{game.letters}}</td>
+                <td>{{game.center_letter}}</td>
+                <td>{{game.guessed_words}}</td>
+                <td>{{game.num_words}}</td>
+                <td>{{game.num_valid_words}}</td>
+                <td>{{game.num_valid_words-game.num_words}}</td>
+                <td>{{game.valid_pangrams}}</td>
+                <td>{{game.guessed_pangrams}}</td>
+                <td>{{game.score}}</td>
+                <td>{{game.total_points}}</td>
+            </tr>
+            {% elif game.rating =="Good" %}
+            <tr class="rowgood">
+                <th scope="row">{{game.id}}</th>
+                <td>{{game.format_date()}}</td>
+                <td>{{game.rating}}</td>
+                <td>{{game.letters}}</td>
+                <td>{{game.center_letter}}</td>
+                <td>{{game.guessed_words}}</td>
+                <td>{{game.num_words}}</td>
+                <td>{{game.num_valid_words}}</td>
+                <td>{{game.num_valid_words-game.num_words}}</td>
+                <td>{{game.valid_pangrams}}</td>
+                <td>{{game.guessed_pangrams}}</td>
+                <td>{{game.score}}</td>
+                <td>{{game.total_points}}</td>
+            </tr>
+            {% elif game.rating =="Moving up" %}
+            <tr class="rowmovingup">
+                <th scope="row">{{game.id}}</th>
+                <td>{{game.format_date()}}</td>
+                <td>{{game.rating}}</td>
+                <td>{{game.letters}}</td>
+                <td>{{game.center_letter}}</td>
+                <td>{{game.guessed_words}}</td>
+                <td>{{game.num_words}}</td>
+                <td>{{game.num_valid_words}}</td>
+                <td>{{game.num_valid_words-game.num_words}}</td>
+                <td>{{game.valid_pangrams}}</td>
+                <td>{{game.guessed_pangrams}}</td>
+                <td>{{game.score}}</td>
+                <td>{{game.total_points}}</td>
+            </tr>
+            {% elif game.rating =="Good start" %}
+            <tr class="rowgoodstart">
+                <th scope="row">{{game.id}}</th>
+                <td>{{game.format_date()}}</td>
+                <td>{{game.rating}}</td>
+                <td>{{game.letters}}</td>
+                <td>{{game.center_letter}}</td>
+                <td>{{game.guessed_words}}</td>
+                <td>{{game.num_words}}</td>
+                <td>{{game.num_valid_words}}</td>
+                <td>{{game.num_valid_words-game.num_words}}</td>
+                <td>{{game.valid_pangrams}}</td>
+                <td>{{game.guessed_pangrams}}</td>
+                <td>{{game.score}}</td>
+                <td>{{game.total_points}}</td>
+            </tr>
+            {% elif game.rating =="Beginner" %}
+            <tr class="rowgbeginner">
+                <th scope="row">{{game.id}}</th>
+                <td>{{game.format_date()}}</td>
+                <td>{{game.rating}}</td>
+                <td>{{game.letters}}</td>
+                <td>{{game.center_letter}}</td>
+                <td>{{game.guessed_words}}</td>
+                <td>{{game.num_words}}</td>
+                <td>{{game.num_valid_words}}</td>
+                <td>{{game.num_valid_words-game.num_words}}</td>
+                <td>{{game.valid_pangrams}}</td>
+                <td>{{game.guessed_pangrams}}</td>
+                <td>{{game.score}}</td>
+                <td>{{game.total_points}}</td>
+            </tr>
+
+            {% endif %}
+            {% endfor %} 
+                
+        </tbody>
+       
+    </table>
+
+</div>
+
+
+
+<ul id="messagecontainer"></ul>
+
+
+<p>Thanks for browsing!</p>
+    
+{%endblock%}
+
+<div class="row justify-content-start ">
+    {% for cupcake in cupcakes %}
+    
+       
+            <div class="col-sm-2">
+                <img class="img-thumbnail"  src="{{cupcake.image}}" alt=" RIP cupcake image was supposed to go here">
+                <p class="text-info font-italic"><b>Flavor:</b> {{cupcake.flavor}}</p>
+                {% if cupcake.rating>=8 %}
+                <p class="text-success font-italic "> <b>Rating:</b> {{cupcake.rating}}</p>
+                {% elif cupcake.rating >=5 %}
+                <p class="text-warning font-italic "><b>Rating:</b> {{cupcake.rating}}</p>
+                {% else %}
+                <p class="text-danger font-italic "><b>Rating:</b> {{cupcake.rating}}</p>
+                {% endif %}
+                <p class="text-info font-italic "><b>Size:</b> {{cupcake.size}}</p>
+            </div> 
+        
+    
+    {% endfor %}
+        </div>

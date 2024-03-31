@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %} Spellingbee User Hive {% endblock %}
+{% block content %}
+<h2>Welcome to the Hive!</h2>
+
+<h4>Select a user to continue to the game pages!</h4>
+
+{%for user in users %}
+
+<div id="profilecontainer">
+    <img class="img-thumbnail" id="userprofilelistimg"  src="{{user.image}}" alt="User image">
+    <a class="btn btn-primary" href="/spellingbee/users/{{user.id}}"> Select {{user.username}}</a>
+    <!-- <button id="usersubmitbtn" class="btn btn-primary" type="submit">Submit</button> -->
+</div>
+
+{% endfor %}
+
+<div id="userformcontainer" class="container">
+    <h3>Register a New User</h3>
+    <div id="userformrow" class="row justify-content-left">
+        <div id="userformcol" class="col-md-5">
+            <form id="userform" method="POST">
+
+            {{form.hidden_tag()}}
+
+            {% for field in form
+            if field.widget.input_type != 'hidden'%}
+
+                <div class="form-group">  
+            {{field.label(class_="text-info font-weight-bold")}}
+            {{field(class_="form-control")}}
+
+            {% for error in field.errors %}
+                    <small class="form-text text-danger">{{error}}</small>
+            
+            {% endfor %}
+                </div>
+            {% endfor %}
+        
+                <button id="usersubmitbtn" class="btn btn-primary" type="submit">Submit</button>
+            </form>
+    </div>
+</div>
+
+
+<ul id="messagecontainer"></ul>
+
+
+<p>Thanks for browsing!</p>
+    
+{%endblock%}
