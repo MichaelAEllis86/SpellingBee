@@ -3,11 +3,29 @@
 {% block content %}
 <h2>Bee Details!</h2>
 
+<a href=/spellingbee/users/{{user.id}}/game/continue>Continue Current Board</a>
+<a href=/spellingbee/users/{{user.id}}/game/new>Start A Fresh Board</a>
+
 
 <div id="profilecontainer">
     <img class="img-thumbnail userprofileimg"  src="{{user.image}}" alt="User image">
     <h4 class=text-info font-italic>{{user.username}}</h4>
 </div>
+
+<div id="boardstatuscontainer">
+    <h2 id="boardstatusheader">Current Board Status</h2>
+    {% if session["game_id"] %}
+    <h3>Letters: {{session["letters"]}}</h3>
+    <h3>Center Letter: {{session["center_letter"]}}</h3>
+    <h3>Rating: {{session["rating"]}}</h3>
+    <h3>You have found: {{session["num_words"]}} words</h3>
+    {%else%}
+    <h3>No Current Board, Start a new game!</h3>
+    {% endif %}
+    <a  class="badge badge-warning gamecontrol boardstatusbtn" href=/spellingbee/users/{{user.id}}/game/continue><h3>Continue Current Board</h3></a>
+<a class="badge badge-dark gamecontrol boardstatusbtn" href=/spellingbee/users/{{user.id}}/game/new><h3>Start A Fresh Board</h3></a>
+</div>
+
 
 <div id="gamehistorycontainer">
     <h4 class=text-warning gamehistory font-italic>{{user.username}}'s Game History</h4>
@@ -28,7 +46,7 @@
                 <th  class="gamehistorycol"scope="col">Max Point Value:</th>
 
                 
-                <th  class="gamehistorycol"scope="col">Replay me! Coming Soon!!!:</th>
+                <th  class="gamehistorycol"scope="col">Replay me!</th>
             </tr> 
         </thead>
         <tbody>
@@ -48,6 +66,7 @@
                 <td>{{game.guessed_pangrams}}</td>
                 <td>{{game.score}}</td>
                 <td>{{game.total_points}}</td>
+                <td><a href="/spellingbee/users/{{user.id}}/{{game.id}}">Replay This game</a></td>
                 
             </tr>
             {% elif game.rating =="Amazing" %}
@@ -65,8 +84,8 @@
                 <td>{{game.guessed_pangrams}}</td>
                 <td>{{game.score}}</td>
                 <td>{{game.total_points}}</td>
-                
-                
+                <td><a href="/spellingbee/users/{{user.id}}/{{game.id}}">Replay This game</a></td>
+                  
             </tr>
             {% elif game.rating =="Great" %}
             <tr class="rowgreat">
@@ -83,6 +102,7 @@
                 <td>{{game.guessed_pangrams}}</td>
                 <td>{{game.score}}</td>
                 <td>{{game.total_points}}</td>
+                <td><a href="/spellingbee/users/{{user.id}}/{{game.id}}">Replay This game</a></td>
             </tr>
             {% elif game.rating =="Nice" %}
             <tr class="rownice">
@@ -94,11 +114,12 @@
                 <td>{{game.guessed_words}}</td>
                 <td>{{game.num_words}}</td>
                 <td>{{game.num_valid_words}}</td>
-                <<td>{{game.num_valid_words-game.num_words}}</td>
+                <td>{{game.num_valid_words-game.num_words}}</td>
                 <td>{{game.valid_pangrams}}</td>
                 <td>{{game.guessed_pangrams}}</td>
                 <td>{{game.score}}</td>
                 <td>{{game.total_points}}</td>
+                <td><a href="/spellingbee/users/{{user.id}}/{{game.id}}">Replay This game</a></td>
             </tr>
             {% elif game.rating =="Solid" %}
             <tr class="rowsolid">
@@ -115,6 +136,7 @@
                 <td>{{game.guessed_pangrams}}</td>
                 <td>{{game.score}}</td>
                 <td>{{game.total_points}}</td>
+                <td><a href="/spellingbee/users/{{user.id}}/{{game.id}}">Replay This game</a></td>
             </tr>
             {% elif game.rating =="Good" %}
             <tr class="rowgood">
@@ -131,6 +153,7 @@
                 <td>{{game.guessed_pangrams}}</td>
                 <td>{{game.score}}</td>
                 <td>{{game.total_points}}</td>
+                <td><a href="/spellingbee/users/{{user.id}}/{{game.id}}">Replay This game</a></td>
             </tr>
             {% elif game.rating =="Moving up" %}
             <tr class="rowmovingup">
@@ -147,6 +170,7 @@
                 <td>{{game.guessed_pangrams}}</td>
                 <td>{{game.score}}</td>
                 <td>{{game.total_points}}</td>
+                <td><a href="/spellingbee/users/{{user.id}}/{{game.id}}">Replay This game</a></td>
             </tr>
             {% elif game.rating =="Good start" %}
             <tr class="rowgoodstart">
@@ -163,6 +187,7 @@
                 <td>{{game.guessed_pangrams}}</td>
                 <td>{{game.score}}</td>
                 <td>{{game.total_points}}</td>
+                <td><a href="/spellingbee/users/{{user.id}}/{{game.id}}">Replay This game</a></td>
             </tr>
             {% elif game.rating =="Beginner" %}
             <tr class="rowgbeginner">
@@ -179,6 +204,7 @@
                 <td>{{game.guessed_pangrams}}</td>
                 <td>{{game.score}}</td>
                 <td>{{game.total_points}}</td>
+                <td><a href="/spellingbee/users/{{user.id}}/{{game.id}}">Replay This game</a></td>
             </tr>
 
             {% endif %}
@@ -190,32 +216,9 @@
 
 </div>
 
-
-
 <ul id="messagecontainer"></ul>
 
 
 <p>Thanks for browsing!</p>
     
 {%endblock%}
-
-<div class="row justify-content-start ">
-    {% for cupcake in cupcakes %}
-    
-       
-            <div class="col-sm-2">
-                <img class="img-thumbnail"  src="{{cupcake.image}}" alt=" RIP cupcake image was supposed to go here">
-                <p class="text-info font-italic"><b>Flavor:</b> {{cupcake.flavor}}</p>
-                {% if cupcake.rating>=8 %}
-                <p class="text-success font-italic "> <b>Rating:</b> {{cupcake.rating}}</p>
-                {% elif cupcake.rating >=5 %}
-                <p class="text-warning font-italic "><b>Rating:</b> {{cupcake.rating}}</p>
-                {% else %}
-                <p class="text-danger font-italic "><b>Rating:</b> {{cupcake.rating}}</p>
-                {% endif %}
-                <p class="text-info font-italic "><b>Size:</b> {{cupcake.size}}</p>
-            </div> 
-        
-    
-    {% endfor %}
-        </div>

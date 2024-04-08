@@ -3,18 +3,19 @@ body{
     background-color: #f7ecf767;
 }
 
-
+/* Navbar formatting */
 .navbar{
     background-color:#e2bd16;
     overflow: hidden;
-   border-bottom: 1px solid black;
+   border-bottom: 3.5px solid black;
+   height: 60px;
  
 }
 
 .navbar a{
     float: left;
     color:black;
-    text-align:center;
+    text-align:right;
     padding: 14px;
     text-decoration: none;
     font-size: 24px;
@@ -26,7 +27,8 @@ body{
 
 }
 
-#firstnametag{
+/* delete these later!!!! */
+/* #firstnametag{
     color:green;
     font-weight: bold;
     text-decoration: underline;
@@ -46,14 +48,14 @@ body{
     text-decoration: underline;
     color: cornflowerblue;
     font-size: 16px;
-}
-
+} */
+/* Welcome h1 on each page */
 #basewelcome{
     font-size: 34px;
     text-decoration: underline;
     text-decoration-color:#e2bd16;
 }
-    
+    /* flash messaging css */
 .success{
     color: green;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
@@ -63,6 +65,25 @@ body{
     color:red;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
 }
+/* user list page formats below */
+
+#userspagecontainer{
+    /* border: 5px solid black; */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: start;
+    width: 50vw;
+    height: 40vh;
+    flex-wrap:wrap ;
+}
+
+#userformcontainer{
+    /* border: 5px solid black; */
+    height: 30vh;
+}
+
+/* user detail page formats below */
 
 #userprofilelistimg{
     height: 150px;
@@ -73,67 +94,40 @@ body{
     right: 28vw;
 }
 
-.hex {
-    margin-top: 30px;
-    width: 104px;
-    height: 60px;
-    background-color: blue;
-    border-color: blue;
-    position: relative;
-    display: inline-block;
-}
-.hex:before {
-    content: " ";
-    width: 0; height: 0;
-    border-bottom: 30px solid;
-    border-color: inherit;
-    border-left: 52px solid transparent;
-    border-right: 52px solid transparent;
-    position: absolute;
-    top: -30px;
-}
-.hex:after {
-    content: "";
-    width: 0;
-    position: absolute;
-    bottom: -30px;
-    border-top: 30px solid;
-    border-color: inherit;
-    border-left: 52px solid transparent;
-    border-right: 52px solid transparent;
-}
-
-.hexagontop{
-    float: left;
-    border-right: 30px solid #6C6;
-    border-top: 52px solid transparent;
-    border-bottom: 52px solid transparent;
-}
-
-.hexagonmiddle{
-    float: left;
-    width: 60px;
-    height: 104px;
-    background-color: #6C6;
-}
-
-.hexagonbottom{
-    float: left;
-    border-left: 30px solid #6C6;
-    border-top: 52px solid transparent;
-    border-bottom: 52px solid transparent;
-}
-
-#hexcontainer{
-    position: absolute;
-    top: 50%;
-    left:50%;
-}
-
 .small{
     font: bold 200px sans-serif
 }
 
+#boardstatuscontainer{
+    border:6px solid #b8b7b6;
+    width: 650px;
+    border-radius: 10px;
+    padding-left: 2%;
+    position: absolute;
+    bottom: 60%;
+    left:20%;
+
+}
+
+.boardstatusbtn{
+
+    width: 450px;
+    margin-bottom: 5px;
+    border: 5px solid black;
+    font-size: 34px;
+    font-weight: 400;
+
+}
+
+#boardstatusheader{
+    font-size: 34px;
+    text-decoration: underline ;
+    text-decoration-color:#e2bd16;
+    text-decoration-thickness: 5px;
+    font-weight: bold;
+}
+
+/* rating formatting for game stats chart */
 .rowgenius{
     background-color:#e2bd16;
 }
@@ -163,35 +157,315 @@ body{
     background-color:#f7ecf767;
 }
 
-
+/* game page ui formatting below */
 #gameboardcontainer{
-    /* position: relative;
-    left: 30vw; */
-    border: 30px solid #999;
+    /* border: 10px solid black; */
     height: 100vh;
-    width:50vw
+    width:50vw;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    /* background-color: #96deeb; */
+}
+
+#hivecontainer{
+    width: 650px;
+    height: 650px;
+    position: relative;
+    left: 13.40vw;
+    bottom:15vh;
+    /* border: 5px solid red;
+    background-color: gray; */
+}
+
+#gameinfocontainer{
+    /* border: 5px solid black; */
+    height: 100vh;
+    width: 650px;
+    position: relative;
+    left:50%;
+    bottom:100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    /* background-color: rebeccapurple; */
+}
+
+#guessformcontainer{
+    /* border: 5px solid blue; */
+    position: relative;
+    width: 650px;
+    height: 400px;
+    top: 15vh;
+    /* background-color: green; */
+    /* top:5%; */
+}
+
+#messagecontainer{
+    /* border: 5px solid blue; */
+    position: absolute;
+    width: 400px;
+    height: 200px;
+    left:610px;
+    top:150px
+
+}
+
+/* .hive{
+    border: 1px solid black;
+} */
+#hive1{
+    position: absolute;
+    top: 35%;
+    left:38%
     
 }
 
+#hive2{
+    position: absolute;
+    top: 9.5%;
+    left:38%;
+}
+#hive3{
+    position: absolute;
+    top: 22.5%;
+    left:15%;
 
-/* #cupcakediv{
-    position: relative;
-    left: 20vw;
-    bottom: 40vh;
-} */
-
-/* .tinyfont{
-    font-size:8px ;
 }
 
-.smallfont{
-    font-size:12px ;
+#hive4{
+    position: absolute;
+    top: 22.5%;
+    left:61%;
+}
+#hive5{
+    position: absolute;
+    top:48.25%;
+    left:15.25%;
+}
+#hive6{
+    position: absolute;
+    left:38%;
+    top:61%;
+}
+#hive7{
+    position: absolute;
+    left:61%;
+    top:48.25%;
+}
+
+#guess{
+    border: none;
+    border-bottom: 7px solid #e2bd16;
+    background-color: #f7ecf767;
+    width: 650px;
+    font-size: 50px;
+    position:absolute ;
+    left: 0%;
+    top: 600px;
+    caret-color: #e2bd16;
+    font-weight: bold;
+
+}
+
+.guesslabel{
+    font-size: 30px;
+    position: absolute;
+    left: -100px;
+    top: 635px;
+}
+
+#guesssubmitbtn{
+    border-radius: 12px;
+    position: absolute;
+    left: 385px;
+    top: 725px;
+    border: 3px solid black;
+
+}
+
+#guessdeletebtn{
+    border-radius: 12px;
+    position: absolute;
+    left: 150px;
+    top: 725px;
+    border: 3px solid black;
+
+}
+
+#savegamebtn{
+    border-radius: 12px;
+    position: absolute;
+    left: 275px;
+    top: 725px;
+    border: 3px solid black;
+}
+
+.fade-out{
+    opacity: 0;
+    transition: 2s ease-out 500ms;
+    animation: fadeOut 4s;
+
+}
+
+@keyframes fadeOut {
+    from{
+        opacity: 1;
+    }
+    to{
+        opacity: 0;
+    }
+}
+
+.score{
+    font-size: 34px;
+    text-decoration: underline ;
+    text-decoration-color:#e2bd16;
+    text-decoration-thickness: 5px;
+}
+
+.rating{
+    font-size: 34px;
+    color:black;
+    text-decoration: underline ;
+    text-decoration-color:#e2bd16;
+    text-decoration-thickness: 5px;
+    position: absolute;
+    bottom:1317px;
+    left:325px;
+}
+
+/* #scorecontainer{
+    margin-bottom: 10px;
+} */
+
+#togglebutton{
+    width: 650px;
+    margin-bottom: 10px;
+    border: 5px solid black;
+    font-size: 34px;
+}
+
+#togglebuttonrules{
+    width: 650px;
+    margin-bottom: 10px;
+    border: 5px solid black;
+    font-size: 34px;
+    /* position: relative;
+    top:50px; */
+}
+
+#guessed_words_container{
+    border:4px solid #b8b7b6;
+    width: 650px;
+    border-radius: 10px;
+    padding-left: 2%;
+}
+
+.foundword{
+    text-decoration: underline ;
+    text-decoration-color:#b8b7b6;
+    text-decoration-thickness: 3px;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.rulesli{
+    margin-bottom: 5px;
+    font-size: 20px;
+
+    
+}
+
+#rulesheader{
+    font-size: 34px;
+    text-decoration: underline ;
+    text-decoration-color:#e2bd16;
+    text-decoration-thickness: 5px;
+    font-weight: bold;
+}
+
+#additionalinfocontainer{
+        /* border: 5px solid black; */
+        height: 100vh;
+        width: 650px;
+        position: relative;
+        left:74%;
+        bottom: 2684px;
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+}
+
+#rulescontainer{
+    border:4px solid #b8b7b6;
+    width: 650px;
+    border-radius: 10px;
+    padding-left: 2%;
+}
+
+#hintsnavbutton{
+    width: 650px;
+    margin-bottom: 5px;
+    border: 5px solid black;
+    font-size: 34px;
+    font-weight: 400;
 }
 
 
 
-#peteditformcontainer{
-    position: relative;
-    bottom: 425px;
-    left:200px
+/* Hints Page formatting */
+#hintscontentcontainer{
+   position: relative;
+   left: 30%;
+        height: 100vh;
+        width: 33vw;
+        display: flex;
+        flex-direction: column;
+        align-items: left;
+
+}
+#hintsh1{
+    text-decoration: underline ;
+    text-decoration-color:#e2bd16;
+    text-decoration-thickness: 5px;
+    font-weight: bold;
+
+}
+
+.hintheader{
+    text-decoration: underline ;
+    text-decoration-color:#e2bd16;
+    text-decoration-thickness: 5px;
+    font-weight: bold;
+}
+
+#rulescontainerhints{
+    width: 650px;
+    border-radius: 10px;
+    padding-left: 2%;
+}
+
+/* #hintsimgglossary{
+    
 } */
+
+#togglebuttonruleshints{
+    width: 650px;
+    margin-bottom: 10px;
+    border: 5px solid black;
+    font-size: 34px;
+    
+}
+
+#togglebuttonglossary{
+    width: 650px;
+    margin-bottom: 10px;
+    border: 5px solid black;
+    font-size: 34px;
+}
+
+.hintstext{
+    font-size: 20px;
+}
+

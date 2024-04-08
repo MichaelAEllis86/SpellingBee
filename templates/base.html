@@ -8,15 +8,26 @@
     <title> {% block title %}{% endblock %}</title>
 </head>
 <body> 
-    <nav class="navbar">
+    <nav class="navbar navbar-light">
     <a href="/">Home</a>
     <a href="/clear">clear the session</a>
     <a href="/spellingbee/users">User Directory</a>
     <a href="/base">Base Template</a>
+
+
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown">
+        More
+      </a>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" href="#">How to Play</a>
+        <a class="dropdown-item" href="#">Another action</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#">Something else here</a>
+      </div>
+    </li>
     </nav>
     <h1 id="basewelcome"> Welcome to Flask Spellingbee &#128029 &#128029 </h1>
-    </section>
-    <main id="content"> {%block content%}{% endblock %} </main>
+    <main id="content"> {%block content%}{% endblock %} 
     {% with messages= get_flashed_messages(with_categories=true) %}
     {% if messages %}
     <section class="messages">
@@ -26,12 +37,11 @@
     </section>
     {%endif%}
     {%endwith%}
+  </main>
     
-    <script src="/static/app.js"></script>
+    
     <script src="https://unpkg.com/axios/dist/axios.js"></script>
-    <script
-  src="https://code.jquery.com/jquery-3.7.1.min.js"
-  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
-  crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="/static/app.js"></script>
 </body>
 </html>

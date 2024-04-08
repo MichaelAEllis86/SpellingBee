@@ -1,7 +1,174 @@
 alert("This is JS Speaking!");
-// const BASE_URL = "http://localhost:5000/api";
-// const form=document.getElementById("cupcake-add-form");
-// const getCupcakesBtn=document.getElementById("getcupcakesbtn");
+const BASE_URL = "http://localhost:5000/api";
+
+// Jquery Selectors
+const $guessForm=$("#guessform");
+const guessForm=document.getElementById("guessform")
+const hiveText=document.getElementsByClassName("text-dark")
+const hives=document.getElementsByClassName("hive")
+const hive1=$("#hive1");
+const $guessInput=$("#guess")
+const $messageContainer=$("#messagecontainer")
+const ratingContainer=$("ratingcontainer")
+const $scoreContainer=$("scorecontainer")
+const $guessedWordsContainer=$("#guessed_words_container")
+
+console.log(`this is guessInput--->${$guessInput}`)
+console.log(`this is hiveText---->${hiveText}`)
+console.log(`this is hives---->${hives}`)
+
+// sends form guess form word to the server for validation.Receives response an
+async function checkWord(){
+    // word is forced to uppercase because words list is formatted in all caps. We are just fixing this for the user before any issue can occur.
+    const word=$('#guess').val().toUpperCase()
+    const response=await axios.post("/spellingbee/validate", {
+		"word": `${word}`,
+	})
+    console.log("this is the repsonse from spellingbee/validate..." ,response);
+    const data=response.data;
+    console.log("this the response data...",data);
+    console.log(data.score)
+    console.log(data.result)
+    console.log(data.guessed_words)
+    displayScoreRating(data.score, data.rating)
+    displayGuessMessage(data.result)
+    displayRating(data.rating)
+    displayGuessedWords(data.guessed_words)
+    return data
+    
+}
+
+function displayGuessMessage(result){
+    if (result === "valid"){
+        $messageContainer.empty()
+        $messageContainer.append(`<h2 class="message fade-out">  &#128029 ${result} </h2>`)
+    }
+    else{
+    $messageContainer.empty()
+    $messageContainer.append(`<h2 class="message fade-out"> ${result}</h2>`)}
+}
+//Displays current score of the user in the DOM
+function displayScoreRating(score,rating){
+    $("#scorecontainer").empty()
+    $("#scorecontainer").append(`<h3 class="score"> Current Score:${score}</h3>`)
+
+    if (rating === "Genius"){
+    $("#scorecontainer").append(`<h3 class="rating"> Current rating: &#127891 &#127891 ${rating}</h3>`)}
+
+    else if(rating ==="Amazing"){
+    $("#scorecontainer").append(`<h3 class="rating"> Current rating: &#127891 ${rating}</h3>`)}
+
+    else if(rating ==="Great"){
+    $("#scorecontainer").append(`<h3 class="rating"> Current rating: &#128029 &#128029 &#128029 ${rating}</h3>`)}
+
+    else if(rating ==="Nice"){
+    $("#scorecontainer").append(`<h3 class="rating"> Current rating: &#128029 &#128029 ${rating}</h3>`)}
+
+    else if(rating ==="Solid"){
+        $("#scorecontainer").append(`<h3 class="rating"> Current rating: &#128029  ${rating}</h3>`)}
+    
+    else{
+        $("#scorecontainer").append(`<h3 class="rating"> Current rating: ${rating}</h3>`)
+    }}
+
+
+function displayRating(rating){
+    $("#ratingcontainer").empty()
+    $("#ratingcontainer").append(`<li class="rating"> Rating:${rating}</li>`)
+}
+
+function displayGuessedWords(guessedWords){
+    $("#guessed_words_container").empty()
+    const lenGuessedWords=guessedWords.length
+    const h3template=`<h3>you have found ${lenGuessedWords} words</h3>`
+    $("#guessed_words_container").append(h3template)
+    sorted=guessedWords.sort()
+    for(let word of sorted){
+        $("#guessed_words_container").append(`<li class="foundword">${word}</li>`)
+    }
+}
+
+function hideGameComponents(){
+    $("#gameboardcontainer").hide()
+    $("#gameinfocontainer").hide()
+}
+
+function showGageComponents(){
+    $("#gameboardcontainer").show()
+    $("#gameinfocontainer").show()
+}
+
+$("#hive1").click(function (){
+    const letter=$("#hive1").text()
+    console.log(`clicked! you are inside hive1 evt listener! here is the letter ${letter}`)
+    $("#guess").append(letter)
+} )
+
+$("#togglebutton").click(function(){
+    console.log("clicked! inside the toggle button evt listener" )
+    $("#guessed_words_container").toggle()
+})
+
+$("#togglebuttonrules").click(function(){
+    console.log("clicked! inside the button toggle evt listener for game rules" )
+    $("#rulescontainer").toggle()
+})
+
+$("#togglebuttonruleshints").click(function(){
+    console.log("clicked! inside the button toggle evt listener for game rules in the hints page" )
+    $("#rulescontainerhints").toggle()
+})
+
+$("#togglebuttonglossary").click(function(){
+    console.log("clicked! inside the button toggle evt listener for the glossary in the hints page" )
+    $("#hintsglossarycontainer").toggle()
+})
+
+
+$("#guessdeletebtn").click(function(){
+    console.log("clicked insinde the guessdeletebtn evn listner")
+    $("#guess").val("")
+})
+
+
+// evt listener which handles form submission of a new cupcake to the api. Also invokes renderCupcakes() to load the new cupcake to the DOM 
+guessForm.addEventListener('submit', async function (evt){
+    const word=$('#guess').val()
+    evt.preventDefault();
+    console.log('clicked',"the evt listener is working", "inside guessform evt listener")
+    console.log(".....................................")
+    console.log(`this is the guessword from the form ${word}`)
+    await checkWord()
+    $('#guess').val("")
+})
+
+
+
+
+
+// function hidePageComponents() {
+//     const components = [
+//       $allStoriesList,
+//       $loginForm,
+//       $signupForm,
+//       $newStoryForm,
+//       $favoritedStoriesList,
+//       $myStoriesList,
+//       $userProfile,
+//     ];
+//     components.forEach(c => c.hide());// hide is a jQuery function that hides the component, but this is fancy! here we put each component as a jQuery item already and just called hide on it
+//   }
+  
+
+
+
+
+
+// hiveText.addEventListener("click", function(evt){
+//     const letter=evt.target.val()
+//     console.log(`${letter} was pressed`) 
+// })
+
 
 // // Fetches all cupcakes in the api, returns that data as a list of objects called cupcakes. Utilized by renderCupcakes().
 // async function getCupcakes(){
@@ -32,19 +199,6 @@ alert("This is JS Speaking!");
 //     }
 // }
 
-// // Passes form values to the api to create a new cupake. Takes in form data as parameters, submits to api/db and rerenders all cupcakes to the DOM. Called when the cupcake-add-form is submitted.
-// async function createCupcake(flavor,image,rating,size){
-//     const response=await axios.post("/api/cupcakes", {
-// 		"flavor": `${flavor}`,
-// 		"image": `${image}`,
-// 		"rating": `${rating}`,
-// 		"size": `${size}`
-// 	})
-//     console.log("this is the repsonse from create cupcake..." ,response);
-//     const data=response.data;
-//     console.log("this the create cupcake data...",data);
-//     renderCupcakes()
-// }
 
 // // evt listener which handles form submission of a new cupcake to the api. Also invokes renderCupcakes() to load the new cupcake to the DOM 
 // form.addEventListener('submit', async function (evt){

@@ -49,7 +49,7 @@ class Game(db.Model):
 
     def __repr__(self):
         g=self
-        return f"<game id={g.id} created_at={g.created_at} rating={g.rating} letters={g.letters} center_letter={g.center_letter} guessed_words={g.guessed_words} all_valid_words={g.all_valid_words} num_words={g.num_words} num_valid_words={g.num_valid_words} valid_pangrams={g.valid_pangrams} guessed_pangrams={g.guessed_pangrams} score={g.score} total_points={g.total_points} user_id={g.user_id} "
+        return f"<game id={g.id} created_at={g.created_at} rating={g.rating} letters={g.letters} center_letter={g.center_letter} guessed_words={g.guessed_words} all_valid_words={g.all_valid_words} num_words={g.num_words} num_valid_words={g.num_valid_words} valid_pangrams={g.valid_pangrams} guessed_pangrams={g.guessed_pangrams} score={g.score} total_points={g.total_points} user_id={g.user_id} removed_center_letter={g.removed_center_letter} "
 
 
 
@@ -84,7 +84,8 @@ class Game(db.Model):
             "guessed_pangrams":self.guessed_pangrams,
             "score":self.score,
             "total_points":self.total_points,
-            "user_id":self.user_id
+            "user_id":self.user_id,
+            "removed_center_letter":self.removed_center_letter
             }
     
     __tablename__ = "games"
@@ -127,6 +128,8 @@ class Game(db.Model):
                     nullable=False,
                     default=0)
     user_id=db.Column(db.Integer, db.ForeignKey('users.id'))
+    removed_center_letter=db.Column(db.String(7),
+                         nullable=False,)
     
 
     

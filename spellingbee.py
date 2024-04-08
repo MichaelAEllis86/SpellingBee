@@ -23,6 +23,7 @@ class SpellingBee():
         self.consonants=self.pick_consonants()
         self.letters=self.generate_letters()
         self.center_letter=self.select_center_letter()
+        self.removed_center_letter=self.letters.replace(self.center_letter,"")
         self.all_valid_words=self.get_all_valid_words()
         self.total_points=self.get_total_points()
         self.valid_pangrams=self.find_all_pangrams()
@@ -59,7 +60,7 @@ class SpellingBee():
             First picks a random number of vowels between 1 and 3
             then we chose that number of vowels to add to the game's letter pool and returns vowel string. 
             Duplicate vowels are disallowed via set conversion (as in the letter "e" cannot appear as one of the vowels twice)"""
-        all_vowels="aeiou"
+        all_vowels="AEIOU"
         number_of_vowels=random.randint(2, 3)
         chosen_vowels=[random.choice(all_vowels) for num in range(number_of_vowels)]
         deduped_chosen_vowels=set(chosen_vowels)
@@ -75,7 +76,9 @@ class SpellingBee():
         The refill pulls from a new pool of consonants "usused_consonants" that does not include the letters we've already selected.
         
         """
-        all_consonants="bcdfghjklmnpqrtvwyxz"
+        # all_consonants="bcdfghjklmnpqrtvwyxz" taking a few letters out of the pool because they make very hard boards with very few words
+        # all_consonants="bcdfghjklmnprtvwy" "making them all uppercase now"
+        all_consonants="BCDFGHKLMNPRTVWXY"
         all_cosonants_set=set(all_consonants)
         number_of_consonants=7-len(self.vowels)
         chosen_consonants=[random.choice(all_consonants) for num in range(number_of_consonants)]
@@ -107,6 +110,7 @@ class SpellingBee():
         chosen_letter=random.choice(self.letters)
         return chosen_letter
     
+    
     #need to add functionality to not allow duplicate words! Done
     def validate_word(self,wordguess):
         """ This Function validates a wordguess from the user, gives feedback, updates scoring"""
@@ -136,7 +140,7 @@ class SpellingBee():
             result="missing center letter"
             return result
         elif length_check==True and central_letter_check==True and word_exists_check==False:
-            result="not a word"
+            result="not a word "
             return result
         elif length_check==True and central_letter_check==True and word_exists_check==True and letter_check_results==False:
             result="bad letters"
@@ -176,7 +180,7 @@ class SpellingBee():
             result="missing center letter"
             return result
         elif length_check==True and central_letter_check==True and word_exists_check==False:
-            result="not a word"
+            result="not a word or invalid letters"
             return result
         elif length_check==True and central_letter_check==True and word_exists_check==True and letter_check_results==False:
             result="bad letters"
