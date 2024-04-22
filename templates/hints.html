@@ -3,22 +3,22 @@
 {% block content %}
 
 <div id=hintscontentcontainer>
-    <div id="hintsheaderscontainer">
+    <div id="hintsheaderscontainer" class="hintsdiv">
     <h1 id="hintsh1">Spellingbee Hints!</h1>
     <h3>Stuck on a puzzle? I can help! I hope?</h3>
     <img id="hintheaderimage" src="https://assets.answersingenesis.org/img/cms/content/contentnode/header_image/honeybees-ones-of-gods-sweetest-designs.jpg" alt="honeycomb.jpeg">
     </div>
-    <div class="hintstextcontainer">
-        <p class="hintstext">Hello User! Welcome to Flask Spellingbee! My name is Michael Ellis and I am glad that you have discovered my rendition of this game!
-            This is my project for Springboard Capstone 1, and I'm very proud to share it with everyone! This is a game that is based on the New York Times
-            wordbuilder game the Spellingbee! For those unfamilar with the game the rules are posted below, alongside a glossary of game terms.
-            <b class="hintstext">Scroll down for rules, glossary of terms and ranks, and finally for the hints!</b>
+    <div class="hintstextcontainer hintsdiv">
+        <p class="hintstext">Hello User! Welcome to Flask Spellingbee! My name is Michael Ellis and I am glad that you have discovered my rendition/ mini clone of this game.
+            This is my project for Springboard Capstone 1, and I'm very proud to share it with everyone. This is a game that is based on the New York Times
+            wordbuilder game the Spellingbee. For those unfamilar with the game the rules are posted below, alongside a glossary of game terms.
+            <b class="hintstext">Scroll down for rules, glossary of terms and ranks, and finally for hints generated for your current hive!</b>
         </p>
     </div>
     <button class="btn btn-warning" type="button" id="togglebuttonruleshints">
         Click to display/hide game rules
     </button>
-    <div id="rulescontainerhints">
+    <div id="rulescontainerhints"  class="hintsdiv">
         <h1 id="rulesheader">Game Rules</h1>
         <h3 id="rulessubheader">Create words from the pool of letters in the hive!</h3>
         <li class="rulesli">Each word must include the center letter</li>
@@ -36,14 +36,16 @@
         Click to display/hide Glossary
     </button>
 
-    <div id="hintsglossarycontainer">
+    <div id="hintsglossarycontainer"  class="hintsdiv">
         <img id=hintsimgglossary src="https://tinypic.host/images/2024/04/07/honeycomb.jpeg" alt="honeycomb.jpeg">
         <h3 class="hintheader">Glossary of Terms</h3>
         <p class="rulesli"><b><i>Hive/Board</i></b>-The Hive is your game letter pool </p>
         <p class="rulesli"><b><i>Center_letter/Center Hive</i></b>-Refers to the letter in the center of the hive and is indicated in yellow. It must be used in the construction of any word </p>
-        <p class="rulesli"><b><i>Pangram</i></b>-A special type of word that incorporates every letter in the hive at least once! We track your pangrams in the game stats. It should be noted that not all boards necessarily have pangrams by default</p>
+        <p class="rulesli"><b><i>Pangram</i></b>-A special type of word that incorporates every letter in the hive at least once! We track your pangrams in the game stats. Pangrams are rare, and not every board has one</p>
         <p class="rulesli"><b><i>Perfect Pangram</i></b>-A special type of pangram where each letter is used exactly once! Worth 7 extra points or double points (functionality and tracking under construction!) </p>
-        <p class="rulesli"><b><i>Bingo</i></b>A special Hive/Board !All seven letters in the puzzle are used to start at least one word in the word list (functionality and tracking under construction!) </p>
+        <p class="rulesli"><b><i>Bingo</i></b>-A special Hive/Board distinction! If all seven letters in the hive are used to start at least one word in the word list, then that hive is a "Bingo" </p>
+        <div class="tenor-gif-embed" data-postid="16052246" data-share-method="host" data-aspect-ratio="1.33333" data-width="100%"><a href="https://tenor.com/view/bingo-tarantino-thats-a-bingo-gif-16052246">Bingo Tarantino GIF</a>from <a href="https://tenor.com/search/bingo-gifs">Bingo GIFs</a></div> <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
+        <h3 class="hintheader">Ratings</h3>
         <p class="rulesli rowgenius" ><b><i>Rating: &#127891 &#127891Genius</i></b>-Scoring equal to 90% of total_points or above </p>
         <p class="rulesli rowamazing"><b><i>Rating: &#127891Amazing</i></b>-Scoring equal to 80% of total_points or above </p>
         <p class="rulesli rowgreat"><b><i>Rating: &#128029 &#128029 &#128029Great</i></b>-Scoring equal to 70% of total_points or above </p>
@@ -54,14 +56,16 @@
         <p class="rulesli rowgoodstart"><b><i>Rating:Good start</i></b>-Scoring equal to 20% of total_points or above </p>
         <p class="rulesli rowgbeginner"><b><i>Rating:Beginner</i></b>-Starting rank. Scoring equal to 19% or below </p>
     </div>
-    <div id="hintsgridcontainer">
+    <div id="hintsgridcontainer" class="hintsdiv">
         <h3 class="hintheader">Now for the ACTUAL HINTS</h3>
         <h5>Game Stats Revealed!</h5>
         <p class="rulesli">Your letters are :<b>{{session["letters"]}}</b></p>
         <p class="rulesli">Your center letter is :<b>{{session["center_letter"]}}</b></p>
+        <p class="rulesli">Your current score is :<b>{{session["score"]}} points</b></p>
         <p class="rulesli">There is/are :<b>{{number_of_pangrams}} pangrams in this board</b></p>
-        <p class="rulesli">Total Words for this board:<b>{{session["num_valid_words"]}}</b></p>
-        <p class="rulesli">Total Points for this board:<b>{{session["total_points"]}}</b></p>
+        <p class="rulesli">Total Words for this hive:<b>{{session["num_valid_words"]}}</b></p>
+        <p class="rulesli">Total Points for this hive:<b>{{session["total_points"]}}</b></p>
+        <p class="rulesli">Is this hive a Bingo hive?<b>{{is_bingo_hive}}</b></p>
         <p class="rulesli rowgenius">You need to score:<b>{{rating_thresholds["Genius"]}} points for  &#127891  &#127891 Genius</b></p>
         <p class="rulesli rowamazing">You need to score:<b>{{rating_thresholds["Amazing"]}} points for  &#127891 Amazing</b></p>
         <p class="rulesli rowgreat">You need to score:<b>{{rating_thresholds["Great"]}} points for &#128029 &#128029 &#128029 Great</b></p>
@@ -70,7 +74,7 @@
         <p class="rulesli rowgood">You need to score:<b>{{rating_thresholds["Good"]}} points for Good</b></p>
         <p class="rulesli rowmovingup">You need to score:<b>{{rating_thresholds["Moving up"]}} points for Moving up</b></p>
         <p class="rulesli rowgoodstart">You need to score:<b>{{rating_thresholds["Good start"]}} points for Good start</b></p>
-        <h3 class="hintheader">Words per letter for your current Hive</h3>
+        <h3 class="hintheader">Words by letter for your current Hive</h3>
         <table id="gamehistorytable" class="table table-hover table-sm table-bordered">
             <thead id="gamehistorythead">
                 <th class="gamehistorycol" scope="col">Letter:</th>
@@ -81,7 +85,17 @@
                 </tr>
         {% endfor %}
         </table>
-
+        <h3 class="hintheader">Words by length for your current hive</h3>
+        <table id="gamehistorytable" class="table table-hover table-sm table-bordered">
+            <thead id="gamehistorythead">
+                <th class="gamehistorycol" scope="col">word length:</th>
+                <th  class="gamehistorycol" scope="col">Number of words</th> </thead>
+                {% for key,value in num_valid_words_by_length.items() %}
+                <tr><th class="gamehistorycol" scope="col">{{key}}:</th>
+                    <td>{{value}}</td>
+                </tr>
+        {% endfor %}
+        </table>
        <!-- here is num valid words by letter {{num_valid_words_by_letter}}
 
        here is num valid words by by letter .items {{num_valid_words_by_letter.items()}} -->

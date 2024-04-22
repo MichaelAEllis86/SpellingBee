@@ -1,13 +1,49 @@
 {% extends "base.html" %}
-{% block title %} Spellingbee {% endblock %}
+{% block title %} Spellingbee Game Page {% endblock %}
 {% block content %}
 
 <div id="gameboardcontainer">
-    <div id="messagecontainer">
-        <h2>Messages go here</h2>
-    </div>
-    <div id="guessformcontainer" class="container">
-        <div id="guessformrow" class="row justify-content-left">
+    <div id="guessformcontainer" class="gamecontainer">
+        <div id="messagecontainer">
+            <h3>Type your guess below!</h3>
+        </div>
+        <div id="hivecontainer">
+            <svg xmlns="http://www.w3.org/2250/svg" id="hive1" class="centerhive" x="0" y="0" version="1.1" viewBox="0 0 499.772 499.772" width="125" height="125" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs">
+                <path d="M492.692 223.646 394.345 52.979a53.123 53.123 0 0 0-46.08-26.667H151.572a53.12 53.12 0 0 0-46.08 26.027L7.145 223.256a53.333 53.333 0 0 0 0 53.333l98.347 170.667a53.332 53.332 0 0 0 46.08 26.453h196.693a53.334 53.334 0 0 0 46.08-25.813l98.347-170.667a53.76 53.76 0 0 0 0-53.333z" fill="rgba(238, 189, 22, 1)"></path>
+                <text x="180" y="315" class="small text-dark">{{session["center_letter"]}}</text>
+            </svg>
+
+            <svg xmlns="http://www.w3.org/2250/svg" id="hive2" class="hive" x="0" y="0" version="1.1" viewBox="0 0 499.772 499.772" width="125" height="125" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs">
+                <path d="M492.692 223.646 394.345 52.979a53.123 53.123 0 0 0-46.08-26.667H151.572a53.12 53.12 0 0 0-46.08 26.027L7.145 223.256a53.333 53.333 0 0 0 0 53.333l98.347 170.667a53.332 53.332 0 0 0 46.08 26.453h196.693a53.334 53.334 0 0 0 46.08-25.813l98.347-170.667a53.76 53.76 0 0 0 0-53.333z" fill="#b8b7b6"></path>
+                <text x="180" y="315" class="small text-dark">{{session["removed_center_letter"][0]}}</text>
+            </svg>
+
+            <svg xmlns="http://www.w3.org/2250/svg" id="hive3" class="hive" x="0" y="0" version="1.1" viewBox="0 0 499.772 499.772" width="125" height="125" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs">
+                <path d="M492.692 223.646 394.345 52.979a53.123 53.123 0 0 0-46.08-26.667H151.572a53.12 53.12 0 0 0-46.08 26.027L7.145 223.256a53.333 53.333 0 0 0 0 53.333l98.347 170.667a53.332 53.332 0 0 0 46.08 26.453h196.693a53.334 53.334 0 0 0 46.08-25.813l98.347-170.667a53.76 53.76 0 0 0 0-53.333z" fill="#b8b7b6"></path>
+                <text x="180" y="315" id="hivetext" class="small text-dark">{{session["removed_center_letter"][1]}}</text>
+            </svg>
+
+            <svg xmlns="http://www.w3.org/2250/svg" id="hive4" class="hive" x="0" y="0" version="1.1" viewBox="0 0 499.772 499.772" width="125" height="125" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs">
+                <path d="M492.692 223.646 394.345 52.979a53.123 53.123 0 0 0-46.08-26.667H151.572a53.12 53.12 0 0 0-46.08 26.027L7.145 223.256a53.333 53.333 0 0 0 0 53.333l98.347 170.667a53.332 53.332 0 0 0 46.08 26.453h196.693a53.334 53.334 0 0 0 46.08-25.813l98.347-170.667a53.76 53.76 0 0 0 0-53.333z" fill="#b8b7b6"></path>
+                <text x="180" y="315" class="small text-dark">{{session["removed_center_letter"][2]}}</text>
+            </svg>
+
+            <svg xmlns="http://www.w3.org/2250/svg" id="hive5" class="hive" x="0" y="0" version="1.1" viewBox="0 0 499.772 499.772" width="125" height="125" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs">
+                <path d="M492.692 223.646 394.345 52.979a53.123 53.123 0 0 0-46.08-26.667H151.572a53.12 53.12 0 0 0-46.08 26.027L7.145 223.256a53.333 53.333 0 0 0 0 53.333l98.347 170.667a53.332 53.332 0 0 0 46.08 26.453h196.693a53.334 53.334 0 0 0 46.08-25.813l98.347-170.667a53.76 53.76 0 0 0 0-53.333z" fill="#b8b7b6"></path>
+                <text x="180" y="315" class="small text-dark">{{session["removed_center_letter"][3]}}</text>
+            </svg>
+
+            <svg xmlns="http://www.w3.org/2250/svg" id="hive6" class="hive" x="0" y="0" version="1.1" viewBox="0 0 499.772 499.772" width="125" height="125" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs">
+                <path d="M492.692 223.646 394.345 52.979a53.123 53.123 0 0 0-46.08-26.667H151.572a53.12 53.12 0 0 0-46.08 26.027L7.145 223.256a53.333 53.333 0 0 0 0 53.333l98.347 170.667a53.332 53.332 0 0 0 46.08 26.453h196.693a53.334 53.334 0 0 0 46.08-25.813l98.347-170.667a53.76 53.76 0 0 0 0-53.333z" fill="#b8b7b6"></path>
+                <text x="180" y="315" class="small text-dark">{{session["removed_center_letter"][4]}}</text>
+            </svg>
+
+            <svg xmlns="http://www.w3.org/2250/svg" id="hive7" class="hive" x="0" y="0" version="1.1" viewBox="0 0 499.772 499.772" width="125" height="125" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs">
+                <path d="M492.692 223.646 394.345 52.979a53.123 53.123 0 0 0-46.08-26.667H151.572a53.12 53.12 0 0 0-46.08 26.027L7.145 223.256a53.333 53.333 0 0 0 0 53.333l98.347 170.667a53.332 53.332 0 0 0 46.08 26.453h196.693a53.334 53.334 0 0 0 46.08-25.813l98.347-170.667a53.76 53.76 0 0 0 0-53.333z" fill="#b8b7b6"></path>
+                <text x="180" y="315" class="small text-dark">{{session["removed_center_letter"][5]}}</text>
+            </svg>
+        </div>
+        <div id="guessformrow" class="form-row">
             <div id="guessformcol" class="col-md-5">
                 <form id="guessform" class="form-inline" action="#">
             
@@ -17,7 +53,7 @@
                     if field.widget.input_type != 'hidden'%}
             
                     <div class="form-group">  
-                        {{field.label(class_="font-weight-bold text-warning guesslabel")}}
+                        {{field.label(class_="font-weight-bold text-dark guesslabel")}}
                         {{field(class_="form-control-lg")}}
             
                         {% for error in field.errors %}
@@ -26,96 +62,116 @@
                         {% endfor %}
                     </div>
                         {% endfor %}
-                    
-                            <button id="guesssubmitbtn" class="btn btn-lg btn-warning" type="submit">Submit</button>
-                            <button id="guessdeletebtn" class="btn btn-lg btn-secondary" type="submit">Delete</button>
-                            <a id="savegamebtn"class="btn btn-lg btn-primary" href="/spellingbee/save">Save</a>
-                        </form>
+                </form>
             </div>
         </div> 
+        <div id="gamebtncontainer">
+            <button id="guesssubmitbtn" form="guessform" class="btn btn-lg btn-dark gamebtn" type="submit">Submit</button>
+            <a id="savegamebtn"class="btn btn-lg btn-dark gamebtn" href="/spellingbee/save">Save</a>
+            <button id="guessdeletebtn" class="btn btn-lg btn-dark gamebtn" type="submit">Delete</button>
+        </div>
     </div>
 
-    <div id="hivecontainer">
-    <svg xmlns="http://www.w3.org/2000/svg" id="hive1" class="centerhive" x="0" y="0" version="1.1" viewBox="0 0 499.772 499.772" width="175" height="175" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs">
-        <path d="M492.692 223.646 394.345 52.979a53.123 53.123 0 0 0-46.08-26.667H151.572a53.12 53.12 0 0 0-46.08 26.027L7.145 223.006a53.333 53.333 0 0 0 0 53.333l98.347 170.667a53.332 53.332 0 0 0 46.08 26.453h196.693a53.334 53.334 0 0 0 46.08-25.813l98.347-170.667a53.76 53.76 0 0 0 0-53.333z" fill="rgba(238, 189, 22, 1)"></path>
-        <text x="182" y="315" class="small text-dark">{{session["center_letter"]}}</text>
-    </svg>
-    <svg xmlns="http://www.w3.org/2000/svg" id="hive2" class="hive" x="0" y="0" version="1.1" viewBox="0 0 499.772 499.772" width="175" height="175" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs">
-        <path d="M492.692 223.646 394.345 52.979a53.123 53.123 0 0 0-46.08-26.667H151.572a53.12 53.12 0 0 0-46.08 26.027L7.145 223.006a53.333 53.333 0 0 0 0 53.333l98.347 170.667a53.332 53.332 0 0 0 46.08 26.453h196.693a53.334 53.334 0 0 0 46.08-25.813l98.347-170.667a53.76 53.76 0 0 0 0-53.333z" fill="#b8b7b6"></path>
-        <text x="182" y="315" class="small text-dark">{{session["removed_center_letter"][0]}}</text>
-    </svg>
-    <svg xmlns="http://www.w3.org/2000/svg" id="hive3" class="hive" x="0" y="0" version="1.1" viewBox="0 0 499.772 499.772" width="175" height="175" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs">
-        <path d="M492.692 223.646 394.345 52.979a53.123 53.123 0 0 0-46.08-26.667H151.572a53.12 53.12 0 0 0-46.08 26.027L7.145 223.006a53.333 53.333 0 0 0 0 53.333l98.347 170.667a53.332 53.332 0 0 0 46.08 26.453h196.693a53.334 53.334 0 0 0 46.08-25.813l98.347-170.667a53.76 53.76 0 0 0 0-53.333z" fill="#b8b7b6"></path>
-        <text x="182" y="315" id="hivetext" class="small text-dark">{{session["removed_center_letter"][1]}}</text>
-    </svg>
-    <svg xmlns="http://www.w3.org/2000/svg" id="hive4" class="hive" x="0" y="0" version="1.1" viewBox="0 0 499.772 499.772" width="175" height="175" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs">
-        <path d="M492.692 223.646 394.345 52.979a53.123 53.123 0 0 0-46.08-26.667H151.572a53.12 53.12 0 0 0-46.08 26.027L7.145 223.006a53.333 53.333 0 0 0 0 53.333l98.347 170.667a53.332 53.332 0 0 0 46.08 26.453h196.693a53.334 53.334 0 0 0 46.08-25.813l98.347-170.667a53.76 53.76 0 0 0 0-53.333z" fill="#b8b7b6"></path>
-        <text x="182" y="315" class="small text-dark">{{session["removed_center_letter"][2]}}</text>
-    </svg>
-    <svg xmlns="http://www.w3.org/2000/svg" id="hive5" class="hive" x="0" y="0" version="1.1" viewBox="0 0 499.772 499.772" width="175" height="175" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs">
-        <path d="M492.692 223.646 394.345 52.979a53.123 53.123 0 0 0-46.08-26.667H151.572a53.12 53.12 0 0 0-46.08 26.027L7.145 223.006a53.333 53.333 0 0 0 0 53.333l98.347 170.667a53.332 53.332 0 0 0 46.08 26.453h196.693a53.334 53.334 0 0 0 46.08-25.813l98.347-170.667a53.76 53.76 0 0 0 0-53.333z" fill="#b8b7b6"></path>
-        <text x="182" y="315" class="small text-dark">{{session["removed_center_letter"][3]}}</text>
-    </svg>
-    <svg xmlns="http://www.w3.org/2000/svg" id="hive6" class="hive" x="0" y="0" version="1.1" viewBox="0 0 499.772 499.772" width="175" height="175" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs">
-        <path d="M492.692 223.646 394.345 52.979a53.123 53.123 0 0 0-46.08-26.667H151.572a53.12 53.12 0 0 0-46.08 26.027L7.145 223.006a53.333 53.333 0 0 0 0 53.333l98.347 170.667a53.332 53.332 0 0 0 46.08 26.453h196.693a53.334 53.334 0 0 0 46.08-25.813l98.347-170.667a53.76 53.76 0 0 0 0-53.333z" fill="#b8b7b6"></path>
-        <text x="182" y="315" class="small text-dark">{{session["removed_center_letter"][4]}}</text>
-    </svg>
-    <svg xmlns="http://www.w3.org/2000/svg" id="hive7" class="hive" x="0" y="0" version="1.1" viewBox="0 0 499.772 499.772" width="175" height="175" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs">
-        <path d="M492.692 223.646 394.345 52.979a53.123 53.123 0 0 0-46.08-26.667H151.572a53.12 53.12 0 0 0-46.08 26.027L7.145 223.006a53.333 53.333 0 0 0 0 53.333l98.347 170.667a53.332 53.332 0 0 0 46.08 26.453h196.693a53.334 53.334 0 0 0 46.08-25.813l98.347-170.667a53.76 53.76 0 0 0 0-53.333z" fill="#b8b7b6"></path>
-        <text x="182" y="315" class="small text-dark">{{session["removed_center_letter"][5]}}</text>
-    </svg>
-    </div>
-</div>
+    <div id="gameinfocontainer" class="gamecontainer">
+        <div id="gameinfobtncontainer">
+            <button class="btn btn-warning" type="button" id="togglebutton">
+            Display Words
+            </button>
+            <button class=" btn btn-dark btn-hints" id="hintsnavbutton">Reveal Hints</button>
+        </div>
 
-<div id="gameinfocontainer">
-    <div id="scorecontainer">
-        <h3 class="score"> Current Score:{{session["score"]}}</h3>
-        <h3 class="rating"> Current Rating:{{session["rating"]}}</h3>
-    </div>
-    <button class="btn btn-warning" type="button" id="togglebutton" data-toggle="collapse" data-target="#guessed_words_container" aria-expanded="false" aria-controls="guessed_words_container">
-        Click to Display/Hide Found Words:
-      </button>
-      <a  class="badge badge-warning" id="hintsnavbutton" href="/spellingbee/users/{{user_id}}/game/{{game_id}}/hints">Click for hints for your current Hive!</a>
-    <div id=guessed_words_container>
-        <h3>you have found {{session["num_words"]}} words</h3>
-        <br>
-        {% for word in session["guessed_words"]%}
-        <li class="foundword">{{word}}</li>
+      
+        <div id="scorecontainer">
+            <h3 class="score"> Current Score:{{session["score"]}}/{{session["total_points"]}} Points</h3>
+            <h3 class="rating row{{session['rating']}}"> Current Rating:{{session["rating"]}}</h3>
+        </div>
+        <div id=guessed_words_container>
+            <h3>you have found {{session["num_words"]}}/{{session["num_valid_words"]}} words...</h3>
+            <br>
+            {% set sorted_words=session["guessed_words"] | sort %}
+
+            {% for word in sorted_words %}
+            <li class="foundword">{{word}}</li>
+            {% endfor %}
+        </div>
+        <div id="hintsgamepagecontainer" class="hidden">
+            <h3 class="hintheader">Words by letter for your current Hive</h3>
+            <table id="gamehistorytable" class="table table-hover table-sm table-bordered">
+                <thead id="gamehistorythead">
+                    <th class="gamehistorycol" scope="col">Letter:</th>
+                    <th  class="gamehistorycol" scope="col">Number of words</th> </thead>
+                    {% for key,value in num_valid_words_by_letter.items() %}
+                    <tr>
+                        <th class="gamehistorycol" scope="col">{{key}}:</th>
+                        <td>{{value}}</td>
+                    </tr>
+                    {% endfor %}
+            </table>
+            <h3 class="hintheader">Words by length for your current Hive</h3>
+            <table id="gamehistorytable" class="table table-hover table-sm table-bordered">
+                <thead id="gamehistorythead">
+                    <th class="gamehistorycol" scope="col">word length:</th>
+                    <th  class="gamehistorycol" scope="col">Number of words</th> </thead>
+                    {% for key,value in num_valid_words_by_length.items() %}
+                    <tr><th class="gamehistorycol" scope="col">{{key}}:</th>
+                        <td>{{value}}</td>
+                    </tr>
         {% endfor %}
+        </table>
+        </div>
+
     </div>
     
-    <!-- <div id="ratingcontainer">rating</div> -->
-        <!-- <p>This is the session data</p>
-        <li>letters::{{session["letters"]}}</li>
-        <li>center_letter::{{session["center_letter"]}}</li>
-        <li>"guessed_words::{{session["guessed_words"]}}</li>
-        <li>"all_valid_words::{{session["all_valid_words"]}}</li>
-        <li>"valid_pangrams::{{session["valid_pangrams"]}}</li>
-        <li>"guessed_pangrams::{{session["guessed_pangrams"]}}</li>
-        <li>score::{{session["score"]}}</li>
-        <li>total_points::{{session["total_points"]}}</li>
-        <li>removed_center_letter::{{session["removed_center_letter"]}}</li>
-        <li>game_id::{{session["game_id"]}}</li>
-        <li>rating::{{session["rating"]}}</li> -->
-</div>
-<div id="additionalinfocontainer">
-    <button class="btn btn-warning" type="button" id="togglebuttonrules">
-        Click to display/hide game rules
-    </button>
-    <div id="rulescontainer">
-        <h1 id="rulesheader">Game Rules</h1>
-        <h3 id="rulessubheader">Create words from the pool of letters in the hive!</h3>
-        <li class="rulesli">Each word must include the center letter</li>
-        <li class="rulesli">Letters can be used more than once</li>
-        <li class="rulesli">Score points by making words!</li>
-        <li class="rulesli">Each word's point value is equal to its length</li>
-        <li class="rulesli">Score more points to increase your rank for a given game</li>
-        <li class="rulesli">Ranks are based on your percentage of points scored out of the total points available for a given hive!</li>
-        <li class="rulesli">Hives/Gameboards vary because they are randomly generated! Some have many words that can be created, others might only have a few!</li>
-        <li class="rulesli">If you're feeling stuck you can always check out the hints page for your current Hive/board! <a href="/spellingbee/users/{{user_id}}/game/{{game_id}}/hints">Hints</a></li>
-        <li class="rulesli">If you get stuck or get sick of your current letters, you can always start a new game from your user hub! You can revisit your games at anytime!</li>
+    <div id="additionalinfocontainer" class="gamecontainer">
+        <button class="btn btn-warning" type="button" id="togglebuttondictionary">
+            Dictionary Bar <i>powered by:</i>
+            <img src="https://dictionaryapi.com/images/MWLogo_120x120.png">
+            <p id="dictionarybartext">Not sure of a word? Check it below!</p>
+        </button>
+        <form class="form-inline"  action="#" id="dictionaryform">
+            {{dictionaryform.hidden_tag()}}
+                
+            {% for field in dictionaryform
+            if field.widget.input_type != 'hidden'%}
+    
+            <div class="form-group">  
+                {{field.label(class_="font-weight-bold text-dark dictionarylabel sr-only")}}
+                {{field(class_="form-control mb-2 mr-sm-2")}}
+    
+                {% for error in field.errors %}
+                <small class="form-text text-danger">{{error}}</small>
+                
+                {% endfor %}
+            </div>
+                {% endfor %}
+    
+            <button type="submit" class="btn btn-warning mb-2">Search Word</button>
+          </form>
+          <!-- <audio id="audio" controls src="https://media.merriam-webster.com/audio/prons/en/us/mp3/z/zoom2501.mp3"></audio> -->
+        <div id=dictionarywordscontainer>
+            Search results:
+        </div>
+        <button class="btn btn-warning" type="button" id="togglebuttonrules">
+            Click to display/hide game rules
+        </button>
+        <div id="rulescontainer">
+            <h3 id="rulesheader">Game Rules</h3>
+            <h3 id="rulessubheader">Create words from the pool of letters in the hive!</h3>
+            <li class="rulesli">Each word must include the center letter</li>
+            <li class="rulesli">Letters can be used more than once</li>
+            <li class="rulesli">Score points by making words!</li>
+            <li class="rulesli">Each word's point value is equal to its length</li>
+            <li class="rulesli">Score more points to increase your rank for a given game</li>
+            <li class="rulesli">Ranks are based on your percentage of points scored out of the total points available for a given hive!</li>
+            <li class="rulesli">Hives/Gameboards vary because they are randomly generated! Some have many words that can be created, others might only have a few!</li>
+            <li class="rulesli">If you're feeling stuck you can always check out the hints page for your current Hive/board! <a href="/spellingbee/users/{{user_id}}/game/{{game_id}}/hints">Hints</a></li>
+            <li class="rulesli">If you get stuck or get sick of your current letters, you can always start a new game from your user hub! You can revisit your games at anytime!</li>
+        </div>
+        
     </div>
+
 </div>
+
 
 
 

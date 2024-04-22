@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/app.css">
+    <title> {% block title %}{% endblock %}</title>
+</head>
+<body class="loginbody"> 
+    <!-- <nav class="navbar navbar-light">
+    <a href="/">Home</a>
+    <a href="/clear">clear the session</a>
+    <a href="/spellingbee/users">User Directory</a>
+    <a href="/base">Base Template</a>
+    <a href="/spellingbee/loginsignup">Login/Signup page</a>
+    </nav> -->
+    <main id="content">
+        <div id=loginpagecontentcontainer>
+            <div id="editformcontainer">
+                <a id="edit" href="/spellingbee/loginsignup" type="button" class="btn btn-dark btn-sm closewindowbtn">X</a>
+                <div id="editformrow" class="row justify-content-center">
+                    <div id="editformcol" class="col-lg-10">
+                        <form id="edit" method="POST">
+                            <h5>Edit user</h5>
+            
+                            {{edit_form.hidden_tag()}}
+            
+                            {% for field in edit_form
+                            if field.widget.input_type != 'hidden'%}
+            
+                            <div class="form-group">  
+                                {{field.label(class_="text-dark font-weight-bold")}}
+                                {{field(class_="form-control-lg")}}
+            
+                                {% for error in field.errors %}
+                                <small class="form-text text-danger">{{error}}</small>
+                        
+                        {% endfor %}
+                            </div>
+                        {% endfor %}
+                    
+                            <button id="editsubmitbtn" class="btn btn-lg btn-dark loginpagebtn" type="submit">Edit User</button>
+                            <a id="loginbtn" href="/spellingbee/users/{{session['user_id']}}" class="btn btn-lg btn-dark loginpagebtn">Go Back</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+  </main>
+    
+    <script src="https://unpkg.com/axios/dist/axios.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="
+https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js
+"></script>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,5 +1,7 @@
-alert("This is JS Speaking!");
-const BASE_URL = "http://localhost:5000/api";
+// alert("This is JS Speaking!");
+// const BASE_URL = "http://localhost:5000/api";
+const apiKey="13b41308-060f-495a-8411-8686570431a6"
+const dictionaryapiurl="https://www.dictionaryapi.com/api/v3/references/collegiate/json/voluminous?key=your-api-key"
 
 // Jquery Selectors
 const $guessForm=$("#guessform");
@@ -12,6 +14,8 @@ const $messageContainer=$("#messagecontainer")
 const ratingContainer=$("ratingcontainer")
 const $scoreContainer=$("scorecontainer")
 const $guessedWordsContainer=$("#guessed_words_container")
+const $dictionaryForm=$("#dictionaryform")
+const loginheader=document.getElementById("loginheader")
 
 console.log(`this is guessInput--->${$guessInput}`)
 console.log(`this is hiveText---->${hiveText}`)
@@ -34,18 +38,21 @@ async function checkWord(){
     displayGuessMessage(data.result)
     displayRating(data.rating)
     displayGuessedWords(data.guessed_words)
-    return data
-    
+    return data  
 }
 
 function displayGuessMessage(result){
     if (result === "valid"){
         $messageContainer.empty()
-        $messageContainer.append(`<h2 class="message fade-out">  &#128029 ${result} </h2>`)
+        $messageContainer.append(`<h3 class="message fade-out">  &#128029 ${result} </h3>`)
+    }
+    else if (result ==="pangram"){
+        $messageContainer.empty()
+        $messageContainer.append(`<h3 class="message fade-out">  &#127891 ${result} </h3>`)
     }
     else{
     $messageContainer.empty()
-    $messageContainer.append(`<h2 class="message fade-out"> ${result}</h2>`)}
+    $messageContainer.append(`<h3 class="message fade-out"> ${result}</h3>`)}
 }
 //Displays current score of the user in the DOM
 function displayScoreRating(score,rating){
@@ -53,19 +60,31 @@ function displayScoreRating(score,rating){
     $("#scorecontainer").append(`<h3 class="score"> Current Score:${score}</h3>`)
 
     if (rating === "Genius"){
-    $("#scorecontainer").append(`<h3 class="rating"> Current rating: &#127891 &#127891 ${rating}</h3>`)}
+    $("#scorecontainer").append(`<h3 class="rating rowgenius"> Current rating: &#127891 &#127891 ${rating}</h3>`)}
 
     else if(rating ==="Amazing"){
-    $("#scorecontainer").append(`<h3 class="rating"> Current rating: &#127891 ${rating}</h3>`)}
+    $("#scorecontainer").append(`<h3 class="rating rowamazing"> Current rating: &#127891 ${rating}</h3>`)}
 
     else if(rating ==="Great"){
-    $("#scorecontainer").append(`<h3 class="rating"> Current rating: &#128029 &#128029 &#128029 ${rating}</h3>`)}
+    $("#scorecontainer").append(`<h3 class="rating rowgreat"> Current rating: &#128029 &#128029 &#128029 ${rating}</h3>`)}
 
     else if(rating ==="Nice"){
-    $("#scorecontainer").append(`<h3 class="rating"> Current rating: &#128029 &#128029 ${rating}</h3>`)}
+    $("#scorecontainer").append(`<h3 class="rating rownice"> Current rating: &#128029 &#128029 ${rating}</h3>`)}
 
     else if(rating ==="Solid"){
-        $("#scorecontainer").append(`<h3 class="rating"> Current rating: &#128029  ${rating}</h3>`)}
+    $("#scorecontainer").append(`<h3 class="rating rowsolid"> Current rating: &#128029  ${rating}</h3>`)}
+    
+    else if(rating ==="Good"){
+    $("#scorecontainer").append(`<h3 class="rating rowgood"> Current rating: ${rating}</h3>`)}
+
+    else if(rating ==="movingup"){
+        $("#scorecontainer").append(`<h3 class="rating rowmovingup"> Current rating: ${rating}</h3>`)}
+    
+    else if(rating ==="Good start"){
+    $("#scorecontainer").append(`<h3 class="rating rowgoodstart"> Current rating: ${rating}</h3>`)}
+
+    else if(rating ==="Beginner"){
+        $("#scorecontainer").append(`<h3 class="rating rowbeginner"> Current rating: ${rating}</h3>`)}
     
     else{
         $("#scorecontainer").append(`<h3 class="rating"> Current rating: ${rating}</h3>`)
@@ -88,6 +107,60 @@ function displayGuessedWords(guessedWords){
     }
 }
 
+function displayDictionaryWords(responseWordData,searchWord){
+    $("#dictionarywordscontainer").empty()
+    if (responseWordData[0].meta ===undefined){
+       const nomatchesmsg=`<i class="rulesli"><b> your word (${searchWord})</b>was not found, please find closest matches below!</i>`
+        $("#dictionarywordscontainer").append(nomatchesmsg)
+        for(let word of responseWordData){
+            $("#dictionarywordscontainer").append(`<p class="rulesli">${word}<p>`)
+        }
+    }
+    else{
+        if(responseWordData[0].hwi.prs!==undefined && responseWordData[0].hwi.prs[0].sound!==undefined ){
+            let audiotag=`<audio controls src="https://media.merriam-webster.com/audio/prons/en/us/mp3/${searchWord[0]}/${responseWordData[0].hwi.prs[0].sound.audio}.mp3">pronunciation:</audio>`
+            let messsagetag=`<p id=dictionarysearchresponse class="rulesli"> <b><i>Dictionary  entries for: ${searchWord}</i></b></p>`
+            $("#dictionarywordscontainer").append(messsagetag,audiotag)}
+        else{
+           let messsagetag=`<p id=dictionarysearchresponse class="rulesli"> <b><i>Dictionary  entries for: ${searchWord}</i></b></p>`
+            $("#dictionarywordscontainer").append(messsagetag)} 
+        }
+       
+    for (let word of responseWordData){
+        templatetag=`<p class="rulesli"><b>${searchWord}<i>(${word.fl})</i>-</b></p>`
+        datetag=`<p class="rulesli"><i>date:(${word.date})</i></p>`
+        $("#dictionarywordscontainer").append(templatetag,datetag)
+        for (let def of word.shortdef){
+        definition=`<p class="rulesli">${def}<p>`
+        $("#dictionarywordscontainer").append(definition)}
+        // for (let idx of word.et){
+        //     etymologytag=`<p class="rulesli"><i>etymology::</i>${idx}<p>`
+        // $("#dictionarywordscontainer").append(etymologytag)}
+
+        }
+        }
+
+async function dictionarySearch(){
+    const searchWord=$("#dictionarysearch").val()
+    const response=await axios.get(`https://www.dictionaryapi.com/api/v3/references/collegiate/json/${searchWord}`,
+    {params:{key:apiKey}})
+    data=response.data
+    console.log(data)
+    displayDictionaryWords(data,searchWord)
+}
+
+function randomPurple(){
+    const hexPurples=["#51087E","#6C0BA9","#880ED4","#A020F0","#B24BF3","#C576F6","#D7A1F9"]
+    let randoPurp=_.sample(hexPurples)
+    console.log(randoPurp)
+    console.log(typeof randoPurp)
+    return randoPurp
+ }
+ setInterval(function(){
+    console.log(`this is the random purple inside set interval`)
+    loginheader.style.color=`${randomPurple()}`
+ },3000)
+
 function hideGameComponents(){
     $("#gameboardcontainer").hide()
     $("#gameinfocontainer").hide()
@@ -98,16 +171,24 @@ function showGageComponents(){
     $("#gameinfocontainer").show()
 }
 
-$("#hive1").click(function (){
-    const letter=$("#hive1").text()
-    console.log(`clicked! you are inside hive1 evt listener! here is the letter ${letter}`)
-    $("#guess").append(letter)
-} )
+// $("#hive1").click(function (){
+//     const letter=$("#hive1").text()
+//     console.log(`clicked! you are inside hive1 evt listener! here is the letter ${letter}`)
+//     $("#guess").append(letter)
+// } )
 
 $("#togglebutton").click(function(){
     console.log("clicked! inside the toggle button evt listener" )
     $("#guessed_words_container").toggle()
 })
+
+$("#hintsnavbutton").click(function(){
+    console.log("clicked! inside the hintsnavbutton toggle button evt listener" )
+    $("#hintsgamepagecontainer").toggleClass("hidden")
+    $("#guessed_words_container").toggleClass("hidden")
+})
+
+
 
 $("#togglebuttonrules").click(function(){
     console.log("clicked! inside the button toggle evt listener for game rules" )
@@ -126,12 +207,52 @@ $("#togglebuttonglossary").click(function(){
 
 
 $("#guessdeletebtn").click(function(){
-    console.log("clicked insinde the guessdeletebtn evn listner")
+    console.log("clicked insinde the guessdeletebtn evt listner")
     $("#guess").val("")
 })
 
+$("#aboutbtn").click(function(){
+    console.log("clicked insinde the aboutbtn evt listner")
+    $("#aboutcontainer").toggle()
+    $("#loginheaderscontainer").toggle()
+})
 
-// evt listener which handles form submission of a new cupcake to the api. Also invokes renderCupcakes() to load the new cupcake to the DOM 
+$("#aboutclose").click(function(){
+    console.log("clicked insinde the aboutbtn evt listner")
+    $("#aboutcontainer").toggle()
+    $("#loginheaderscontainer").toggle()
+})
+
+$( document ).ready(function() {
+    $("#aboutcontainer").toggle()
+  });
+
+$("#signupbtn").click(function(){
+    console.log("clicked insinde the signupbtn evt listner")
+    $("#signupformcontainer").toggle()
+    $("#loginheaderscontainer").toggle()
+})
+
+$("#signupclose").click(function(){
+    console.log("clicked insinde the signupbtn evt listner")
+    $("#signupformcontainer").toggle()
+    $("#loginheaderscontainer").toggle()
+})
+
+// $("#loginbtn").click(function(){
+//     console.log("clicked insinde the signupbtn evt listner")
+//     $("#Loginformcontainer").toggle()
+//     $("#loginheaderscontainer").toggle()
+// })
+
+// $("#loginclose").click(function(){
+//     console.log("clicked insinde the signupbtn evt listner")
+//     $("#Loginformcontainer").toggle()
+//     $("#loginheaderscontainer").toggle()
+// })
+
+
+// 
 guessForm.addEventListener('submit', async function (evt){
     const word=$('#guess').val()
     evt.preventDefault();
@@ -142,102 +263,11 @@ guessForm.addEventListener('submit', async function (evt){
     $('#guess').val("")
 })
 
-
-
-
-
-// function hidePageComponents() {
-//     const components = [
-//       $allStoriesList,
-//       $loginForm,
-//       $signupForm,
-//       $newStoryForm,
-//       $favoritedStoriesList,
-//       $myStoriesList,
-//       $userProfile,
-//     ];
-//     components.forEach(c => c.hide());// hide is a jQuery function that hides the component, but this is fancy! here we put each component as a jQuery item already and just called hide on it
-//   }
-  
-
-
-
-
-
-// hiveText.addEventListener("click", function(evt){
-//     const letter=evt.target.val()
-//     console.log(`${letter} was pressed`) 
-// })
-
-
-// // Fetches all cupcakes in the api, returns that data as a list of objects called cupcakes. Utilized by renderCupcakes().
-// async function getCupcakes(){
-//     const response=await axios.get("/api/cupcakes")
-//     console.log("this is the repsonse...Inside GetCupcakes" ,response);
-//     const data=response.data;
-//     console.log("this is data...",data);
-//    const cupcakes=data.cupcakes;
-//     console.log("this is cupcakes...",cupcakes);
-//     return cupcakes;
-// }
-
-// //  Utilizes api data from getCupcakes(), interates over each cupcake object rendering the data into html with bootstrap class formatting. Can also do it without, see commented out code.
-// // Called when user clicks get the get cupcakes button via axios btn and when the cupcake-add-form is submitted.
-// async function renderCupcakes(){
-//     // this line isn't needed because getCupcakes will give you cupcakes anyways, but just being explicit. CUPCAKES.
-//    const cupcakes=await getCupcakes()
-//     console.log("this is what cupcakes is from inside renderCupcakes.....",cupcakes)
-//     $("#cupcakediv").empty() 
-//     for (let cupcake of cupcakes){
-//         // $("#cupcakelist").append(`<div class=cupcakewrapper><img class=image src=${cupcake.image} width="200" height="300" ><li><b>Flavor:</b>${cupcake.flavor}, <b>Rating:</b> ${cupcake.rating},<b>Size:</b> ${cupcake.size}</li></div>`) Just some original formatting logic before integrationg of bootstrap formatting in the JS
-//         $("#cupcakediv").append(`<div class="col-sm-2">
-//         <img class="img-thumbnail" src=${cupcake.image} alt=" RIP cupcake image was supposed to go here">
-//         <p class="text-info font-italic"><b>Flavor:</b> ${cupcake.flavor}</p>
-//         <p class="text-info font-italic "><b>Rating:</b> ${cupcake.rating}</p>
-//         <p class="text-info font-italic "><b>Size:</b> ${cupcake.size}</p>
-//     </div> `)
-//     }
-// }
-
-
-// // evt listener which handles form submission of a new cupcake to the api. Also invokes renderCupcakes() to load the new cupcake to the DOM 
-// form.addEventListener('submit', async function (evt){
-//     evt.preventDefault();
-//     const flavor=$('#flavor').val()
-//     const image=$('#image').val()
-//     const rating=$('#rating').val()
-//     const size=$('#size').val()
-//     console.log('clicked',"the evt listener is working", "inside guessform evt listener")
-//     console.log(".....................................")
-//     console.log("this is what word the form will send....",`the flavor is... ${flavor} the image is ${image} the rating is ${rating} the size is ${size}`)
-//     await createCupcake(flavor,image,rating,size)
-//     $('#flavor').val("")
-//     $('#image').val("")
-//     $('#rating').val("")
-//     $('#size').val("")})
-
-
-// // button with evt listener which will also render cupcakes to the dom
-// getCupcakesBtn.addEventListener("click", renderCupcakes)
-
-// // Start the application.
-// document.addEventListener("DOMContentLoaded",renderCupcakes)
-
-
-
-
-// $( "#cupcake-add-form" ).on('submit', async function (evt){
-//     evt.preventDefault();
-//     const flavor=$('#flavor').val()
-//     const image=$('#image').val()
-//     const rating=$('#rating').val()
-//     const size=$('#size').val()
-//     console.log('clicked',"the evt listener is working", "inside guessform evt listener")
-//     console.log(".....................................")
-//     console.log("this is what word the form will send....",`the flavor is... ${flavor} the image is ${image} the rating is ${rating} the size is ${size}`)
-
-//     await createCupcake(flavor,image,rating,size)
-//     $('#flavor').val("")
-//     $('#image').val("")
-//     $('#rating').val("")
-//     $('#size').val("")})
+$dictionaryForm.on("submit",async function (evt){
+    const searchWord=($("#dictionarysearch").val())
+    evt.preventDefault();
+    console.log('clicked',"the evt listener is working", "inside dictionaryform evt listener")
+    console.log(`this is the searchWord from the form ${searchWord}`)
+    await dictionarySearch()
+    $("#dictionarysearch").val("")
+})

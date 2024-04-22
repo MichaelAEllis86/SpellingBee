@@ -4,7 +4,8 @@ from flask_debugtoolbar import DebugToolbarExtension
 from spellingbee import SpellingBee
 from models import db, connect_db, User,Game
 from flask_sqlalchemy import SQLAlchemy
-from form import Guessform, Userform
+from form import Guessform, Userform, Dictionaryform, Loginform
+from flask_bcrypt import Bcrypt
 
 app=Flask(__name__)
 app.app_context().push()
@@ -22,8 +23,28 @@ app.config['SECRET_KEY']="oh-so-secret"
 debug=DebugToolbarExtension(app)
 
 connect_db(app)
+bcrypt=Bcrypt()
 
-#helper functions, move these later maybe to a new code sheet?
+# <---------------Spellingbee Game helper functions, move these later maybe to a new code sheet---------------->?
+
+def read_dict(dict_path):
+    """Read and return all words in dictionary .txt file"""
+    dict_file = open(dict_path)
+    words = [w.strip() for w in dict_file]
+    dict_file.close()
+    return words
+
+def subtract_s_words(word_list):
+    """removes all the words that have an S in them from a list of words. Used because the spellingbee game is deliberately "s" free per the game rules """
+    no_s_word_list={word for word in word_list if "s" not in word}
+    return no_s_word_list
+
+def word_list_init(dict_path):
+    """prepare a word list for use by the Spellingbee class/game. Reads words txt file and then filters out all the words with S from said list."""
+    words=read_dict(dict_path)
+    no_s_word_list=set(subtract_s_words(words))
+    return no_s_word_list
+
 def clear__all_sessions():
     "used to clear the session of all game data so the user can start a new game."
     session["rating"]="empty"
@@ -42,8 +63,8 @@ def clear__all_sessions():
 
 def set_sessions_for_newgame():
     """makes new instance of spellingbee game. Updates all session values to reflect the new game.
-    DOES NOT UPDATE the session["game_id"]"""
-    game=SpellingBee()
+    DOES NOT UPDATE the session["game_id"]!!!! WE do that in the view function after the game has been assigned an id in the database!"""
+    game=SpellingBee(no_s_words)
     print("the new spellingbee instance has been created")
     
     session["letters"]=game.letters
@@ -61,6 +82,7 @@ def set_sessions_for_newgame():
     session["rating"]=evaluate_rating(session["score"],session["total_points"])
 
 def assign_sessions_for_db(user_id):
+    """Currently unused function. Intended purpose is to take all existing session game data and make a new game with it in the db"""
     newgame=Game(rating=session["rating"], letters=session["letters"], center_letter=session["center_letter"], guessed_words=session["guessed_words"], all_valid_words=session["all_valid_words"], num_words=session["num_words"], num_valid_words=session["num_valid_words"],valid_pangrams=session["valid_pangrams"],guessed_pangrams=session["guessed_pangrams"],score=session["score"],total_points=session["total_points"],removed_center_letter=session["removed_center_letter"],user_id=user_id)
     db.session.add(newgame)
     db.session.commit()
@@ -113,7 +135,8 @@ def get_points_away_from_rating(num_of_points, total_num_points):
 
 def get_words_by_letter(wordlst):
     """This function takes in a list of valid words for a given board/hive and then provides a dictionary break down of how many of those words start with a given letter
-    The purpose of this is to provide the user additional game hint data Final output looks like this num_valid_words_by_letter={"A":4, "B":3, etc}"""
+    The purpose of this is to provide the user additional game hint data regarding how many words in a given hive start with the specified letter. 
+    Final output looks like this num_valid_words_by_letter={"A":4, "B":3, etc}"""
     startswithA=[word for word in wordlst if word.startswith("A")==True]
     startswithB=[word for word in wordlst if word.startswith("B")==True]
     startswithC=[word for word in wordlst if word.startswith("C")==True]
@@ -143,6 +166,19 @@ def get_words_by_letter(wordlst):
     valid_words_by_letter={key:value for key,value in words_by_letter.items() if len(value)>0 }
     num_valid_words_by_letter={key:len(value) for key,value in valid_words_by_letter.items()}
     return num_valid_words_by_letter
+
+def get_words_by_length(wordlst):
+    """Creates a dictionary to store the lengths of each valid words in a hive, and then how many times a word of a given length appear in the hive's valid word list.
+    final output is a dictionary with a number of letters a word has as a key, then a value that corresponds to the amount of times a 4 letter word appears in the valid word list
+     EX output {"4":20, "5":10, "6":3} meaning that there are 20 4 letter words, 10 5 letter words, and 3 6 letter words in that puzzle """
+    word_length_counts={}
+    for word in wordlst:
+        word_length=len(word)
+        if word_length in word_length_counts:
+            word_length_counts[word_length]+=1
+        else:
+            word_length_counts[word_length]=1
+    return word_length_counts
 
 def validate_word_from_session(wordguess):
     """ This Function validates a wordguess from the user and gives feedback depending on if the word is valid or not!
@@ -189,13 +225,16 @@ def validate_word_from_session(wordguess):
                 session["guessed_pangrams"].append(wordguess)
                 result="pangram"
             return result
+#<-----------Init of the games words dictionary files----------->
+no_s_words=word_list_init("words.txt")
 
+#<-----------ROUTES BEGIN HERE----------->
 
-# #Start the game
-# game=SpellingBee()
+#<-----------Utility routes for testing and development purposes are below These Can be delete safely if noted----------->
 
 @app.route("/clear")
 def clear_session_and_redirect():
+    """Clears all game data from the session, redirects to home"""
     clear__all_sessions()
     return redirect("/")
 
@@ -206,6 +245,7 @@ def show_base():
     """show base template page for reference"""
     return render_template("base.html")
 
+#delete me later
 @app.route("/old")
 def generate_and_show_game():
     """Displays the board with a guess form , updates session with game parameters"""
@@ -291,23 +331,89 @@ def generate_and_show_game():
 
     return render_template("home.html", form=form, game=game)
 
+# <-----------Routes concerning user login, signup, logout, and authorization/validation for said routes are below----------->
 @app.route("/")
-def show_users_as_home():
-   form=Userform()
-   users=User.query.all()
+def redirect_to_loginsignup():
+    return redirect("/spellingbee/loginsignup")
 
-   if form.validate_on_submit():
-       username=form.username.data
-       image=form.image.data
-       print(f"the new user form data is username={username} image={image}")
-       new_user=User(username=username, image=image)
-       db.session.add(new_user)
-       db.session.commit()
-       flash("New User created!!")
-       flash(f"your new user is {new_user.username}, with an id of {new_user.id}", "success")
+@app.route("/spellingbee/loginsignup", methods=["GET", "POST"])
+def show_loginsignup_page():
+    """Shows login and singup page in GET route. In POST route handles the submission of the signup form to save a new user into the Users db model/users table"""
+    form=Userform()
+    if form.validate_on_submit():
+        username=form.username.data
+        pwd=form.password.data
+        image=form.image.data
+        print(f"the new user form data is username={username} image={image}")
+        new_user=User.register(username,pwd,image)
+        db.session.add(new_user)
+        db.session.commit()
+        flash("New User created!!")
+        flash(f"your new user is {new_user.username}, with an id of {new_user.id}", "success")
+        session["user_id"]=new_user.id
+        user_id=int(session["user_id"])
+        return redirect(f"/spellingbee/users/{user_id}")
+    else: 
+        return render_template("loginsignup.html", form=form)
+# this route is a GET request soley so it can be used in anchor tags so easy user access to logout! It violates restful protocol and would at least be a POST request Can wrap in form!
+@app.route("/spellingbee/logout")
+def logout():
+    """Saves game in session to the db if one exists, then logs user out by removing "user_id" from the session.
+    Clears the session of all game data after saving. Redirects back to login/signup page with a friendly message :)"""
+    if session.get("game_id", "empty")!="empty":
+        session_game_id=int(session["game_id"])
+        sessiongamequery=Game.query.get_or_404(session_game_id)
+        game_user_id=sessiongamequery.user_id
+        sessiongamequery.rating=session["rating"]
+        sessiongamequery.letters=session["letters"]
+        sessiongamequery.center_letter=session["center_letter"]
+        sessiongamequery.guessed_words=session["guessed_words"]
+        sessiongamequery.all_valid_words=session["all_valid_words"]
+        sessiongamequery.num_words=session["num_words"]
+        sessiongamequery.num_valid_words=session["num_valid_words"]
+        sessiongamequery.valid_pangrams=session["valid_pangrams"]
+        sessiongamequery.guessed_pangrams=session["guessed_pangrams"]
+        sessiongamequery.score=session["score"]
+        sessiongamequery.total_points=session["total_points"]
+        sessiongamequery.removed_center_letter=session["removed_center_letter"]
+        db.session.commit()
+        flash(" Board Saved!! Have an awesome day!" , "success")
+        session.pop("user_id")
+        print("the previous game's session has been saved to the game DB entry! logging the user out!")
+        clear__all_sessions()
+        return redirect("/spellingbee/loginsignup")
+    else:
+        flash("Have a nice day!" , "success")
+        print("There was nothing in the session to save!")
+        session.pop("user_id")
+        clear__all_sessions()
+        return redirect("/spellingbee/loginsignup")
 
-   return render_template("userlist.html",users=users, form=form)
+    
+#loginform page and login handle form
+@app.route("/spellingbee/login", methods=["GET","POST"])
+def validate_login_redirect():
+   """renders lightweight form page for login via GET.
+   Handles login valdiation via POST takes data from login form username and pwd and compares to encrypted password  """
+   loginform=Loginform()
+   if loginform.validate_on_submit():
+        username=loginform.username.data
+        pwd=loginform.password.data
+        print(f"the login form data is username={username}")
+        user=User.authenticate(username,pwd)
 
+        if user:
+            session["user_id"]=user.id
+            user_id=int(session["user_id"])
+            flash("login successful! taking you to your game hub","success")
+            return redirect(f"/spellingbee/users/{user_id}")
+        else:
+           flash("invalid username or password", "error")
+           return redirect("/spellingbee/loginsignup")
+   return render_template("login.html", loginform=loginform)
+    
+    
+# #delete me later
 @app.route("/spellingbee/users", methods=["GET", "POST"])
 def show_and_add_users():
    form=Userform()
@@ -325,41 +431,124 @@ def show_and_add_users():
 
    return render_template("userlist.html",users=users, form=form)
 
+#updated for passwords delete all the edit form shit if it doesnt work! 
 @app.route("/spellingbee/users/<user_id>")
 def show_user_detail(user_id):
+    if "user_id" not in session:
+        flash("You must be logged in to view", "error")
+        return redirect("/spellingbee/loginsignup")
+    else:
+        int_user_id=int(user_id)
+        user=User.query.get_or_404(int_user_id)
+       
+    # query's for user and game history statistics
+        games=user.games
+        user_word_total=db.session.query(db.func.sum(Game.num_words)).filter(Game.user_id==int_user_id).scalar()
+        user_game_count=Game.query.filter_by(user_id=int_user_id).count()
+        gamecount_genius=Game.query.filter_by(user_id=int_user_id,rating="Genius").count()
+        gamecount_amazing=Game.query.filter_by(user_id=int_user_id,rating="Amazing").count()
+        gamecount_great=Game.query.filter_by(user_id=int_user_id,rating="Great").count()
+        gamecount_nice=Game.query.filter_by(user_id=int_user_id,rating="Nice").count()
+        gamecount_solid=Game.query.filter_by(user_id=int_user_id,rating="Solid").count()
+        gamecount_good=Game.query.filter_by(user_id=int_user_id,rating="Good").count()
+        gamecount_moving_up=Game.query.filter_by(user_id=int_user_id,rating="Moving up").count()
+        gamecount_good_start=Game.query.filter_by(user_id=int_user_id,rating="Good start").count()
+        gamecount_beginner=Game.query.filter_by(user_id=int_user_id,rating="Beginner").count()
+        return render_template("userdetail.html", user_id=int_user_id, user=user,games=games, user_word_total=user_word_total, user_game_count=user_game_count,gamecount_genius=gamecount_genius,
+                           gamecount_amazing=gamecount_amazing, gamecount_great=gamecount_great, gamecount_nice=gamecount_nice, gamecount_solid=gamecount_solid,
+                           gamecount_good=gamecount_good, gamecount_moving_up=gamecount_moving_up, gamecount_good_start=gamecount_good_start, gamecount_beginner=gamecount_beginner)
+    
+@app.route("/spellingbee/users/<user_id>/edit" ,methods=["GET","POST"])
+def show_handle_user_edit(user_id):
     int_user_id=int(user_id)
+    if "user_id" not in session or int(session["user_id"])!=int_user_id:
+         flash("You must be logged in to edit a user", "error")
+         return redirect("/spellingbee/loginsignup")
     user=User.query.get_or_404(int_user_id)
-    games=user.games
-    return render_template("userdetail.html", user=user,games=games)
+    edit_form=Userform(obj=user)
+    if edit_form.validate_on_submit():
+        username=edit_form.username.data
+        pwd=edit_form.password.data
+        image=edit_form.image.data
+        hashed_pwd=User.edit_password(pwd)
+        print(f"checking the form data username={username} pwd={pwd} image={image}")
+        user.username=username
+        user.password=hashed_pwd
+        user.image=image
+        print(f"checking the final edited user....  user_id={user.id} username={user.username} password={user.password} image={user.image}")
+        db.session.commit()
+        flash("User edited!!")
+        flash(f"your edited user is {user.username}, with an id of {user.id}", "success")
+        return redirect(f"/spellingbee/users/{session['user_id']}")
 
-#this route allows users to make a new board!
+
+
+    return render_template("edit.html", edit_form=edit_form, user=user)
+        
+#  user_edit_form=Userform(obj=user) 
+ # if user_edit_form.validate_on_submit():
+        #     username=user_edit_form.username.data
+        #     pwd=user_edit_form.password.data
+        #     image=user_edit_form.image.data
+        #     print(f"the edit user form data is username={username} pwd={pwd} image={image}")
+        #     user=User.register(username,pwd,image)
+        #     db.session.commit()
+        #     flash("User edited!!")
+        #     flash(f"your edited user is {user.username}, with an id of {user.id}", "success")
+        #     session["user_id"]=user.id
+        #     user_id_from_session=int(session["user_id"])
+        #     return redirect(f"/spellingbee/users/{user_id_from_session}")
+        # else:
+
+# Post route to delete a user! 
+@app.route("/spellingbee/users/<user_id>/delete", methods=["POST"])
+def delete_user(user_id):
+    """simple delete user POST route. Deletes the queried user from the DB. Queries user by taking the user id from the route."""
+    int_user_id=int(user_id)
+    if "user_id" not in session or int(session["user_id"])!=int_user_id:
+         flash("You must be logged in to delete a user", "error")
+         return redirect("/spellingbee/loginsignup")
+    else:
+        user=User.query.get_or_404(int_user_id)
+        db.session.delete(user)
+        db.session.commit()
+        session.pop("user_id")
+        flash("User successfully deleted", "success")
+        return redirect("/spellingbee/loginsignup")
+
+
+#this route allows users to make a new board/hive!
+#updated for passwords
 @app.route("/spellingbee/users/<user_id>/game/new")
 def generate_new_game(user_id):
-    int_user_id=int(user_id)
-    #grabbing previous game's sessions data if present
-    if session.get("game_id", "empty")!="empty":
-      
-       game_id=int(session["game_id"])
 
-       #updating game database with previous game's session data
-       sessiongamequery=Game.query.get_or_404(game_id)
-       sessiongamequery.rating=session["rating"]
-       sessiongamequery.letters=session["letters"]
-       sessiongamequery.center_letter=session["center_letter"]
-       sessiongamequery.guessed_words=session["guessed_words"]
-       sessiongamequery.all_valid_words=session["all_valid_words"]
-       sessiongamequery.num_words=session["num_words"]
-       sessiongamequery.num_valid_words=session["num_valid_words"]
-       sessiongamequery.valid_pangrams=session["valid_pangrams"]
-       sessiongamequery.guessed_pangrams=session["guessed_pangrams"]
-       sessiongamequery.score=session["score"]
-       sessiongamequery.total_points=session["total_points"]
-       sessiongamequery.removed_center_letter=session["removed_center_letter"]
-       db.session.commit()
-       flash("Previous Board Saved!! Making a New Game!" , "success")
-       print("the previous game session has been saved to the game DB entry! Making new Game!")
+    if "user_id" not in session:
+        flash("You must be logged in to view", "error")
+        return redirect("/spellingbee/loginsignup")
     else:
-       print("There is no current game to save! Making new game")
+        int_user_id=int(user_id)
+        #grabbing previous game's sessions data if present
+        if session.get("game_id", "empty")!="empty":
+            game_id=int(session["game_id"])
+            #updating game database with previous game's session data
+            sessiongamequery=Game.query.get_or_404(game_id)
+            sessiongamequery.rating=session["rating"]
+            sessiongamequery.letters=session["letters"]
+            sessiongamequery.center_letter=session["center_letter"]
+            sessiongamequery.guessed_words=session["guessed_words"]
+            sessiongamequery.all_valid_words=session["all_valid_words"]
+            sessiongamequery.num_words=session["num_words"]
+            sessiongamequery.num_valid_words=session["num_valid_words"]
+            sessiongamequery.valid_pangrams=session["valid_pangrams"]
+            sessiongamequery.guessed_pangrams=session["guessed_pangrams"]
+            sessiongamequery.score=session["score"]
+            sessiongamequery.total_points=session["total_points"]
+            sessiongamequery.removed_center_letter=session["removed_center_letter"]
+            db.session.commit()
+            flash("Previous Board Saved!! Making a New Game!" , "success")
+            print("the previous game session has been saved to the game DB entry! Making new Game!")
+        else:
+            print("There is no current game to save! Making new game")
 
     #clearing old session data, making a new game, setting the session for newgame
     clear__all_sessions()
@@ -373,116 +562,136 @@ def generate_new_game(user_id):
     session["game_id"]=newgame.id
     return redirect(f"/spellingbee/users/{int_user_id}/game/{session['game_id']}")
 
-
+#updated for passwords
 @app.route("/spellingbee/users/<user_id>/game/continue")
 def continue_game(user_id):
-    int_user_id=int(user_id)
-    #grabbing previous game's sessions data if present
-    if session.get("game_id", "empty")!="empty":
-      
-       game_id=int(session["game_id"])
-
-       #updating game database with previous game's session data
-       sessiongamequery=Game.query.get_or_404(game_id)
-       sessiongamequery.rating=session["rating"]
-       sessiongamequery.letters=session["letters"]
-       sessiongamequery.center_letter=session["center_letter"]
-       sessiongamequery.guessed_words=session["guessed_words"]
-       sessiongamequery.all_valid_words=session["all_valid_words"]
-       sessiongamequery.num_words=session["num_words"]
-       sessiongamequery.num_valid_words=session["num_valid_words"]
-       sessiongamequery.valid_pangrams=session["valid_pangrams"]
-       sessiongamequery.guessed_pangrams=session["guessed_pangrams"]
-       sessiongamequery.score=session["score"]
-       sessiongamequery.total_points=session["total_points"]
-       sessiongamequery.removed_center_letter=session["removed_center_letter"]
-       db.session.commit()
-       flash("Previous Board Saved!! Continuing your present game!" , "success")
-       print("the previous game session has been saved to the game DB entry! Continuing with the current board!")
-       return redirect(f"/spellingbee/users/{int_user_id}/game/{session['game_id']}")
+    if "user_id" not in session:
+        flash("You must be logged in to view", "error")
+        return redirect("/spellingbee/loginsignup")
     else:
-       flash("You don't have a game going yet! Make a new game!", "error")
-       return redirect(f"/spellingbee/users/{int_user_id}")
-# game page
+        int_user_id=int(user_id)
+    #grabbing previous game's sessions data if present
+        if session.get("game_id", "empty")!="empty":
+            game_id=int(session["game_id"])
+            #updating game database with previous game's session data
+            sessiongamequery=Game.query.get_or_404(game_id)
+            sessiongamequery.rating=session["rating"]
+            sessiongamequery.letters=session["letters"]
+            sessiongamequery.center_letter=session["center_letter"]
+            sessiongamequery.guessed_words=session["guessed_words"]
+            sessiongamequery.all_valid_words=session["all_valid_words"]
+            sessiongamequery.num_words=session["num_words"]
+            sessiongamequery.num_valid_words=session["num_valid_words"]
+            sessiongamequery.valid_pangrams=session["valid_pangrams"]
+            sessiongamequery.guessed_pangrams=session["guessed_pangrams"]
+            sessiongamequery.score=session["score"]
+            sessiongamequery.total_points=session["total_points"]
+            sessiongamequery.removed_center_letter=session["removed_center_letter"]
+            db.session.commit()
+            flash("Previous Board Saved!! Continuing your present game!" , "success")
+            print("the previous game session has been saved to the game DB entry! Continuing with the current board!")
+            return redirect(f"/spellingbee/users/{int_user_id}/game/{session['game_id']}")
+        else:
+            flash("You don't have a game going yet! Make a new game!", "error")
+            return redirect(f"/spellingbee/users/{int_user_id}")
+# gameplay page updated for passwords
 @app.route("/spellingbee/users/<user_id>/game/<game_id>")
 def showgameboardpage(user_id,game_id):
-    int_user_id=int(user_id)
-    int_game_id=int(game_id)
-    form=Guessform()
-    user=User.query.get_or_404(int_user_id)
-    gamequery=Game.query.get_or_404(int_game_id)
-    rank_thresholds=get_rating_point_thresholds(session["total_points"])
-    return render_template("home.html", user=user, gamequery=gamequery, form=form,user_id=int_user_id,game_id=int_game_id, rank_thresholds=rank_thresholds)
+    if "user_id" not in session:
+        flash("You must be logged in to view", "error")
+        return redirect("/spellingbee/loginsignup")
+    else:
+        int_user_id=int(user_id)
+        int_game_id=int(game_id)
+        form=Guessform()
+        dictionaryform=Dictionaryform()
+        user=User.query.get_or_404(int_user_id)
+        gamequery=Game.query.get_or_404(int_game_id)
+        rank_thresholds=get_rating_point_thresholds(session["total_points"])
+        num_valid_words_by_letter=get_words_by_letter(session["all_valid_words"])
+        num_valid_words_by_length=get_words_by_length(session["all_valid_words"])
+        return render_template("home.html", user=user, gamequery=gamequery, form=form, dictionaryform=dictionaryform,user_id=int_user_id,game_id=int_game_id, rank_thresholds=rank_thresholds, num_valid_words_by_length=num_valid_words_by_length, num_valid_words_by_letter=num_valid_words_by_letter)
 
-# hints page navigated to from the game page!
+# hints page navigated to from the gameplay page updated for passwords!
 @app.route("/spellingbee/users/<user_id>/game/<game_id>/hints")
 def showgamehintspage(user_id,game_id):
-    int_user_id=int(user_id)
-    int_game_id=int(game_id)
-    user=User.query.get_or_404(int_user_id)
-    gamequery=Game.query.get_or_404(int_game_id)
-    number_of_pangrams=len(session["valid_pangrams"])
-    rating_thresholds=get_rating_point_thresholds(session["total_points"])
-    num_valid_words_by_letter=get_words_by_letter(session["all_valid_words"])
-    print(f"here is valid_words_by_letter ----> {num_valid_words_by_letter}")
-    return render_template("hints.html", user=user, gamequery=gamequery,user_id=int_user_id,game_id=int_game_id,number_of_pangrams=number_of_pangrams,rating_thresholds=rating_thresholds, num_valid_words_by_letter=num_valid_words_by_letter)
+    if "user_id" not in session:
+        flash("You must be logged in to view", "error")
+        return redirect("/spellingbee/loginsignup")
+    else:
+        int_user_id=int(user_id)
+        int_game_id=int(game_id)
+        user=User.query.get_or_404(int_user_id)
+        gamequery=Game.query.get_or_404(int_game_id)
+        number_of_pangrams=len(session["valid_pangrams"])
+        rating_thresholds=get_rating_point_thresholds(session["total_points"])
+        num_valid_words_by_letter=get_words_by_letter(session["all_valid_words"])
+        num_valid_words_by_length=get_words_by_length(session["all_valid_words"])
+        is_bingo_hive=len(num_valid_words_by_letter)==7
+        print(f"here is valid_words_by_letter ----> {num_valid_words_by_letter}")
+        return render_template("hints.html", user=user, gamequery=gamequery,user_id=int_user_id,game_id=int_game_id,number_of_pangrams=number_of_pangrams,rating_thresholds=rating_thresholds, num_valid_words_by_letter=num_valid_words_by_letter, is_bingo_hive=is_bingo_hive, num_valid_words_by_length=num_valid_words_by_length)
 
 
-
+#updated for passwords! Alternate Gameplaypage navigated to via a game replay on the user hub.
 @app.route("/spellingbee/users/<int:user_id>/<int:game_id>")
 def show_game_replay_page(user_id, game_id):
-    int_user_id=int(user_id)
-    int_game_id=int(game_id)
-    form=Guessform()
-
-    if session.get("game_id", "empty")!="empty":
-      
-       session_game_id=int(session["game_id"])
-
-       #updating game database with previous game's session data
-       sessiongamequery=Game.query.get_or_404(session_game_id)
-       sessiongamequery.rating=session["rating"]
-       sessiongamequery.letters=session["letters"]
-       sessiongamequery.center_letter=session["center_letter"]
-       sessiongamequery.guessed_words=session["guessed_words"]
-       sessiongamequery.all_valid_words=session["all_valid_words"]
-       sessiongamequery.num_words=session["num_words"]
-       sessiongamequery.num_valid_words=session["num_valid_words"]
-       sessiongamequery.valid_pangrams=session["valid_pangrams"]
-       sessiongamequery.guessed_pangrams=session["guessed_pangrams"]
-       sessiongamequery.score=session["score"]
-       sessiongamequery.total_points=session["total_points"]
-       sessiongamequery.removed_center_letter=session["removed_center_letter"]
-       db.session.commit()
-       flash("Previous Board Saved!! Now continuing to your replay!" , "success")
-       print("the previous game session has been saved to the game DB entry! Continuing with the current board!")
+    if "user_id" not in session:
+        flash("You must be logged in to view", "error")
+        return redirect("/spellingbee/loginsignup")
     else:
-       flash("no previous board to save, Now continuing to your replay!",)
-    clear__all_sessions()
-    user=User.query.get_or_404(int_user_id)
-    gamequery=Game.query.get_or_404(int_game_id)
-    print("testing the session from the game replay!")
-    print(f"here is session score after the sessionreset---> {session['score']}")
+        int_user_id=int(user_id)
+        int_game_id=int(game_id)
+        form=Guessform()
+        dictionaryform=Dictionaryform()
+        
+        if session.get("game_id", "empty")!="empty":
+            session_game_id=int(session["game_id"])
+            #updating game database with previous game's session data
+            sessiongamequery=Game.query.get_or_404(session_game_id)
+            sessiongamequery.rating=session["rating"]
+            sessiongamequery.letters=session["letters"]
+            sessiongamequery.center_letter=session["center_letter"]
+            sessiongamequery.guessed_words=session["guessed_words"]
+            sessiongamequery.all_valid_words=session["all_valid_words"]
+            sessiongamequery.num_words=session["num_words"]
+            sessiongamequery.num_valid_words=session["num_valid_words"]
+            sessiongamequery.valid_pangrams=session["valid_pangrams"]
+            sessiongamequery.guessed_pangrams=session["guessed_pangrams"]
+            sessiongamequery.score=session["score"]
+            sessiongamequery.total_points=session["total_points"]
+            sessiongamequery.removed_center_letter=session["removed_center_letter"]
+            db.session.commit()
+            flash("Previous Board Saved!! Now continuing to your replay!" , "success")
+            print("the previous game session has been saved to the game DB entry! Continuing with the current board!")
+        else:
+            flash("no previous board to save, Now continuing to your replay!",)
+        clear__all_sessions()
+        user=User.query.get_or_404(int_user_id)
+        gamequery=Game.query.get_or_404(int_game_id)
+        print("testing the session from the game replay!")
+        print(f"here is session score after the sessionreset---> {session['score']}")
 
-    #updating the session with the game from the database we are pulling for the replay
+        #updating the session with the game from the database we are pulling for the replay
 
-    session["rating"]=gamequery.rating
-    session["letters"]=gamequery.letters
-    session["center_letter"]=gamequery.center_letter
-    session["guessed_words"]=gamequery.guessed_words
-    session["all_valid_words"]=gamequery.all_valid_words
-    session["num_words"]=gamequery.num_words
-    session["num_valid_words"]=gamequery.num_valid_words
-    session["valid_pangrams"]=gamequery.valid_pangrams
-    session["guessed_pangrams"]=gamequery.guessed_pangrams
-    session["score"]=gamequery.score
-    session["total_points"]=gamequery.total_points
-    session["game_id"]=gamequery.id
-    session["removed_center_letter"]=gamequery.removed_center_letter
-    print("testing the session from the game replay!")
-    print(f"here is session score after the db.query---> {session['score']}")
+        session["rating"]=gamequery.rating
+        session["letters"]=gamequery.letters
+        session["center_letter"]=gamequery.center_letter
+        session["guessed_words"]=gamequery.guessed_words
+        session["all_valid_words"]=gamequery.all_valid_words
+        session["num_words"]=gamequery.num_words
+        session["num_valid_words"]=gamequery.num_valid_words
+        session["valid_pangrams"]=gamequery.valid_pangrams
+        session["guessed_pangrams"]=gamequery.guessed_pangrams
+        session["score"]=gamequery.score
+        session["total_points"]=gamequery.total_points
+        session["game_id"]=gamequery.id
+        session["removed_center_letter"]=gamequery.removed_center_letter
+        print("testing the session from the game replay!")
+        print(f"here is session score after the db.query---> {session['score']}")
+        num_valid_words_by_letter=get_words_by_letter(session["all_valid_words"])
+        num_valid_words_by_length=get_words_by_length(session["all_valid_words"])
 
-    return render_template("home.html", user=user,game=gamequery, form=form, user_id=int_user_id, game_id=int_game_id)
+        return render_template("home.html", user=user,game=gamequery, form=form, dictionaryform=dictionaryform, user_id=int_user_id, game_id=int_game_id, num_valid_words_by_letter=num_valid_words_by_letter, num_valid_words_by_length=num_valid_words_by_length)
 
 # API Route Saving/Updating a game
 # This route is not restful! It has to be a get because it is currently utilized as an anchor tag in game ui. As data is changed it violated resfulconvention for GET route Should we change this?
@@ -534,6 +743,7 @@ def validate_word():
                     "removed_center_letter":session["removed_center_letter"],
                     "game_id":session["game_id"]
                     })
+
                    
 # @app.route("/showcupcakes")
 # def show_cupcakes_page():
@@ -566,7 +776,7 @@ def validate_word():
 #     db.session.add(new_cupcake)
 #     db.session.commit()
 #     serialized_new_cupcake=new_cupcake.serialize_cupcake()
-#     return (jsonify(new_cupcake=serialized_new_cupcake),201)
+#     return (jsonify(new_cupcake=serialized_new_cupcake),20int_user_id)
 
 # @app.route("/api/cupcakes/<cupcake_id>", methods=["DELETE"])
 # def del_a_cupcake(cupcake_id):
@@ -578,10 +788,10 @@ def validate_word():
 
 # #Several approaches to this patch route which I will detail.
 
-# #1 replace with all fields found in request.json. This method is good if the user doesn't want to update all fields. However, if anything doesn't conform to the model we will get a bug,which is possible.
+# #int_user_id replace with all fields found in request.json. This method is good if the user doesn't want to update all fields. However, if anything doesn't conform to the model we will get a bug,which is possible.
 
 # # @app.route("/api/cupcakes/<cupcake_id>", methods=["PATCH"])
-# # def edit_a_cupcake_v1(cupcake_id):
+# # def edit_a_cupcake_vint_user_id(cupcake_id):
 # #     print(" Checking the data we received in request.json!!!->->",request.json)
 # #     int_cupcake_id=int(cupcake_id)
 # #     cupcake=Cupcake.query.get_or_404(int_cupcake_id)
@@ -611,7 +821,7 @@ def validate_word():
 # 	"cupcake": {
 # 		"flavor": "lemon",
 # 		"id": 3,
-# 		"image": "https://tinypic.host/images/2024/03/25/vegan-lemon-cupcakes-1..jpeg",
+# 		"image": "https://tinypic.host/images/2024/03/25/vegan-lemon-cupcakes-int_user_id..jpeg",
 # 		"rating": 7.0,
 # 		"size": "small"
 # 	}

@@ -13,10 +13,9 @@ import string
 # 4. points are assigned based on the length of the word, 1 point per letter
 
 class SpellingBee():
-    def __init__(self):
-
-        self.words = self.read_dict("words.txt")
-        self.no_s_words=self.subtract_s_words(self.words)
+    def __init__(self,no_s_wordlst):
+        # self.words = self.read_dict("words.txt")
+        self.no_s_words=no_s_wordlst
         self.score=0
         self.guessed_words=[]
         self.vowels=self.pick_vowels()
@@ -32,18 +31,18 @@ class SpellingBee():
         self.num_valid_words=len(self.all_valid_words)
         
 
-    def read_dict(self, dict_path):
-        """Read and return all words in dictionary."""
+    # def read_dict(self, dict_path):
+    #     """Read and return all words in dictionary."""
 
-        dict_file = open(dict_path)
-        words = [w.strip() for w in dict_file]
-        # lowercase_words=[word for ]
-        dict_file.close()
-        return words
+    #     dict_file = open(dict_path)
+    #     words = [w.strip() for w in dict_file]
+    #     # lowercase_words=[word for ]
+    #     dict_file.close()
+    #     return words
     
-    def subtract_s_words(self,word_list):
-        no_s_word_list=[word for word in word_list if "s" not in word]
-        return no_s_word_list
+    # def subtract_s_words(self,word_list):
+    #     no_s_word_list=[word for word in word_list if "s" not in word]
+    #     return no_s_word_list
     
     # need to change this! per the spellingbee rules a word with a length of 4 has a score of 1, and each additional letter adds 1 point. right now score is just length of the word
     def add_score (self,valid_word):
@@ -203,7 +202,7 @@ class SpellingBee():
         word_exists_check=wordguess in self.no_s_words
         # print(f"the word exists check is {word_exists_check}")
         
-        letter_check_results=all([letter in self.letters for letter in wordguess])
+        letter_check_results=all({letter in self.letters for letter in wordguess})
         # print(f"letter_check_results are {letter_check_results}")
 
         if length_check== False:

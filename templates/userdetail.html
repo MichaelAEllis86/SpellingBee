@@ -1,224 +1,339 @@
-{% extends "base.html" %}
-{% block title %} Spellingbee User Hive {% endblock %}
-{% block content %}
-<h2>Bee Details!</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/app.css">
+    <title> {% block title %}Spellingbee User Hub{% endblock %}</title>
+</head>
+<body id="userdetailbody"> 
+    <nav id="userhubnav" class="navbar navbar-dark justify-content-end">
+        <a class="navbar-brand userhubnavlink" href="#">&#128029 Flask Spellingbee &#128029</a>
+        <a class="nav-item nav-link active userhubnavlink" href="/">Home</a>
+        {% if session["user_id"] %}
+        <a class="nav-item nav-link active userhubnavlink" href="/spellingbee/logout">Logout</a>
+        {%endif%}
+        {% if session["game_id"]!='empty' and session["user_id"] %}
+        <a class="basenavlink nav-item nav-link active" href="/spellingbee/users/{{session['user_id']}}/game/{{session['game_id']}}/hints">Hints</a>
+        </nav>
+        {%endif%} 
+    </nav>
+    <main id="content">
+        <div id=userhubpagecontainer>
+            <div id="gamehistorycontainer">
+                <h3 id="gamehistoryheader" class="text-light">Welcome to {{user.username}}'s Game hub </h3>
+                <table id="gamehistorytable" class="table table-hover table-dark table-sm table-responsive">
+                    <thead id="gamehistorythead">
+                        <tr><th class="gamehistorycol" scope="col">Game id:</th>
+                            <th  class="gamehistorycol" scope="col">Created at:</th>
+                            <th  class="gamehistorycol" scope="col">Rating:</th>
+                            <th  class="gamehistorycol" scope="col">Letters:</th>
+                            <th  class="gamehistorycol" scope="col">Center Letter:</th>
+                            <!-- <th  class="gamehistorycol"scope="col">words_played:</th> -->
+                            <th  class="gamehistorycol"scope="col">Number of Words played:</th>
+                            <th  class="gamehistorycol"scope="col">Total number of findable words:</th>
+                            <th  class="gamehistorycol"scope="col">Words Remaining:</th>
+                            <th  class="gamehistorycol"scope="col">Pangrams Possible:</th>
+                            <th  class="gamehistorycol"scope="col">Pangrams Found:</th>
+                            <th  class="gamehistorycol"scope="col">score:</th>
+                            <th  class="gamehistorycol"scope="col">Max Point Value:</th>
+        
+                        
+                            <th  class="gamehistorycol"scope="col">Replay</th>
+                        </tr> 
+                    </thead>
+                    <tbody>
+                        {% for game in games %}
+                        {% if game.rating =="Genius" %}
+                        <tr class="rowgenius">
+                            <th scope="row">{{game.id}}</th>
+                            <td>{{game.format_date()}}</td>
+                            <td>&#127891 &#127891{{game.rating}}</td>
+                            <td>{{game.letters}}</td>
+                            <td>{{game.center_letter}}</td>
+                            <!-- <td class="gamehistoryguessedwords">{{game.guessed_words}}</td> -->
+                            <td>{{game.num_words}}</td>
+                            <td>{{game.num_valid_words}}</td>
+                            <td>{{game.num_valid_words-game.num_words}}</td>
+                            <td>{{game.valid_pangrams}}</td>
+                            <td>{{game.guessed_pangrams}}</td>
+                            <td>{{game.score}}</td>
+                            <td>{{game.total_points}}</td>
+                            <td><a class="badge-pill badge-dark" href="/spellingbee/users/{{user.id}}/{{game.id}}">Replay</a></td>
+                        
+                        </tr>
+                        {% elif game.rating =="Amazing" %}
+                        <tr class="rowamazing">
+                            <th scope="row">{{game.id}}</th>
+                            <td>{{game.format_date()}}</td>
+                            <td>&#127891{{game.rating}}</td>
+                            <td>{{game.letters}}</td>
+                            <td>{{game.center_letter}}</td>
+                            <!-- <td class="gamehistoryguessedwords">{{game.guessed_words}}</td> -->
+                            <td>{{game.num_words}}</td>
+                            <td>{{game.num_valid_words}}</td>
+                            <td>{{game.num_valid_words-game.num_words}}</td>
+                            <td>{{game.valid_pangrams}}</td>
+                            <td>{{game.guessed_pangrams}}</td>
+                            <td>{{game.score}}</td>
+                            <td>{{game.total_points}}</td>
+                            <td><a class="badge-pill badge-dark" href="/spellingbee/users/{{user.id}}/{{game.id}}">Replay</a></td>
+                          
+                        </tr>
+                        {% elif game.rating =="Great" %}
+                        <tr class="rowgreat">
+                            <th scope="row">{{game.id}}</th>
+                            <td>{{game.format_date()}}</td>
+                            <td>&#128029 &#128029 &#128029{{game.rating}}</td>
+                            <td>{{game.letters}}</td>
+                            <td>{{game.center_letter}}</td>
+                            <!-- <td class="gamehistoryguessedwords">{{game.guessed_words}}</td> -->
+                            <td>{{game.num_words}}</td>
+                            <td>{{game.num_valid_words}}</td>
+                            <td>{{game.num_valid_words-game.num_words}}</td>
+                            <td>{{game.valid_pangrams}}</td>
+                            <td>{{game.guessed_pangrams}}</td>
+                            <td>{{game.score}}</td>
+                            <td>{{game.total_points}}</td>
+                            <td><a class="badge-pill badge-dark" href="/spellingbee/users/{{user.id}}/{{game.id}}">Replay</a></td>
+                        </tr>
+                        {% elif game.rating =="Nice" %}
+                        <tr class="rownice">
+                            <th scope="row">{{game.id}}</th>
+                            <td>{{game.format_date()}}</td>
+                            <td>&#128029 &#128029{{game.rating}}</td>
+                            <td>{{game.letters}}</td>
+                            <td>{{game.center_letter}}</td>
+                            <!-- <td class="gamehistoryguessedwords">{{game.guessed_words}}</td> -->
+                            <td>{{game.num_words}}</td>
+                            <td>{{game.num_valid_words}}</td>
+                            <td>{{game.num_valid_words-game.num_words}}</td>
+                            <td>{{game.valid_pangrams}}</td>
+                            <td>{{game.guessed_pangrams}}</td>
+                            <td>{{game.score}}</td>
+                            <td>{{game.total_points}}</td>
+                            <td><a class="badge-pill badge-dark" href="/spellingbee/users/{{user.id}}/{{game.id}}">Replay</a></td>
+                        </tr>
+                        {% elif game.rating =="Solid" %}
+                        <tr class="rowsolid">
+                            <th scope="row">{{game.id}}</th>
+                            <td>{{game.format_date()}}</td>
+                            <td>&#128029{{game.rating}}</td>
+                            <td>{{game.letters}}</td>
+                            <td>{{game.center_letter}}</td>
+                            <!-- <td class="gamehistoryguessedwords">{{game.guessed_words}}</td> -->
+                            <td>{{game.num_words}}</td>
+                            <td>{{game.num_valid_words}}</td>
+                            <td>{{game.num_valid_words-game.num_words}}</td>
+                            <td>{{game.valid_pangrams}}</td>
+                            <td>{{game.guessed_pangrams}}</td>
+                            <td>{{game.score}}</td>
+                            <td>{{game.total_points}}</td>
+                            <td><a class="badge-pill badge-dark" href="/spellingbee/users/{{user.id}}/{{game.id}}">Replay</a></td>
+                        </tr>
+                        {% elif game.rating =="Good" %}
+                        <tr class="rowgood">
+                            <th scope="row">{{game.id}}</th>
+                            <td>{{game.format_date()}}</td>
+                            <td>{{game.rating}}</td>
+                            <td>{{game.letters}}</td>
+                            <td>{{game.center_letter}}</td>
+                            <!-- <td class="gamehistoryguessedwords">{{game.guessed_words}}</td> -->
+                            <td>{{game.num_words}}</td>
+                            <td>{{game.num_valid_words}}</td>
+                            <td>{{game.num_valid_words-game.num_words}}</td>
+                            <td>{{game.valid_pangrams}}</td>
+                            <td>{{game.guessed_pangrams}}</td>
+                            <td>{{game.score}}</td>
+                            <td>{{game.total_points}}</td>
+                            <td><a class="badge-pill badge-dark" href="/spellingbee/users/{{user.id}}/{{game.id}}">Replay</a></td>
+                        </tr>
+                        {% elif game.rating =="Moving up" %}
+                        <tr class="rowmovingup">
+                            <th scope="row">{{game.id}}</th>
+                            <td>{{game.format_date()}}</td>
+                            <td>{{game.rating}}</td>
+                            <td>{{game.letters}}</td>
+                            <td>{{game.center_letter}}</td>
+                            <!-- <td class="gamehistoryguessedwords">{{game.guessed_words}}</td> -->
+                            <td>{{game.num_words}}</td>
+                            <td>{{game.num_valid_words}}</td>
+                            <td>{{game.num_valid_words-game.num_words}}</td>
+                            <td>{{game.valid_pangrams}}</td>
+                            <td>{{game.guessed_pangrams}}</td>
+                            <td>{{game.score}}</td>
+                            <td>{{game.total_points}}</td>
+                            <td><a class="badge-pill badge-dark" href="/spellingbee/users/{{user.id}}/{{game.id}}">Replay</a></td>
+                        </tr>
+                        {% elif game.rating =="Good start" %}
+                        <tr class="rowgoodstart">
+                            <th scope="row">{{game.id}}</th>
+                            <td>{{game.format_date()}}</td>
+                            <td>{{game.rating}}</td>
+                            <td>{{game.letters}}</td>
+                            <td>{{game.center_letter}}</td>
+                            <!-- <td class="gamehistoryguessedwords">{{game.guessed_words}}</td> -->
+                            <td>{{game.num_words}}</td>
+                            <td>{{game.num_valid_words}}</td>
+                            <td>{{game.num_valid_words-game.num_words}}</td>
+                            <td>{{game.valid_pangrams}}</td>
+                            <td>{{game.guessed_pangrams}}</td>
+                            <td>{{game.score}}</td>
+                            <td>{{game.total_points}}</td>
+                            <td><a class="badge-pill badge-dark" href="/spellingbee/users/{{user.id}}/{{game.id}}">Replay</a></td>
+                        </tr>
+                        {% elif game.rating =="Beginner" %}
+                        <tr class="rowbeginner">
+                            <th scope="row">{{game.id}}</th>
+                            <td>{{game.format_date()}}</td>
+                            <td>{{game.rating}}</td>
+                            <td>{{game.letters}}</td>
+                            <td>{{game.center_letter}}</td>
+                            <!-- <td class="gamehistoryguessedwords">{{game.guessed_words}}</td> -->
+                            <td>{{game.num_words}}</td>
+                            <td>{{game.num_valid_words}}</td>
+                            <td>{{game.num_valid_words-game.num_words}}</td>
+                            <td>{{game.valid_pangrams}}</td>
+                            <td>{{game.guessed_pangrams}}</td>
+                            <td>{{game.score}}</td>
+                            <td>{{game.total_points}}</td>
+                            <td><a class="badge-pill badge-dark" href="/spellingbee/users/{{user.id}}/{{game.id}}">Replay</a></td>
+                        </tr>
+        
+                        {% endif %}
+                        {% endfor %} 
+                        
+                    </tbody>
+               
+                </table>
+        
+            </div>
 
-<a href=/spellingbee/users/{{user.id}}/game/continue>Continue Current Board</a>
-<a href=/spellingbee/users/{{user.id}}/game/new>Start A Fresh Board</a>
-
-
-<div id="profilecontainer">
-    <img class="img-thumbnail userprofileimg"  src="{{user.image}}" alt="User image">
-    <h4 class=text-info font-italic>{{user.username}}</h4>
-</div>
-
-<div id="boardstatuscontainer">
-    <h2 id="boardstatusheader">Current Board Status</h2>
-    {% if session["game_id"] %}
-    <h3>Letters: {{session["letters"]}}</h3>
-    <h3>Center Letter: {{session["center_letter"]}}</h3>
-    <h3>Rating: {{session["rating"]}}</h3>
-    <h3>You have found: {{session["num_words"]}} words</h3>
-    {%else%}
-    <h3>No Current Board, Start a new game!</h3>
-    {% endif %}
-    <a  class="badge badge-warning gamecontrol boardstatusbtn" href=/spellingbee/users/{{user.id}}/game/continue><h3>Continue Current Board</h3></a>
-<a class="badge badge-dark gamecontrol boardstatusbtn" href=/spellingbee/users/{{user.id}}/game/new><h3>Start A Fresh Board</h3></a>
-</div>
-
-
-<div id="gamehistorycontainer">
-    <h4 class=text-warning gamehistory font-italic>{{user.username}}'s Game History</h4>
-    <table id="gamehistorytable" class="table table-hover table-sm table-bordered">
-        <thead id="gamehistorythead">
-            <tr><th class="gamehistorycol" scope="col">Game id:</th>
-                <th  class="gamehistorycol" scope="col">Created at:</th>
-                <th  class="gamehistorycol" scope="col">Rating:</th>
-                <th  class="gamehistorycol" scope="col">Letters:</th>
-                <th  class="gamehistorycol" scope="col">Center Letter:</th>
-                <th  class="gamehistorycol"scope="col">words_played:</th>
-                <th  class="gamehistorycol"scope="col">Number of Words played:</th>
-                <th  class="gamehistorycol"scope="col">Total number of findable words:</th>
-                <th  class="gamehistorycol"scope="col">Wounded bees  &#128029 (Aka the words remaing to be found):</th>
-                <th  class="gamehistorycol"scope="col">Pangrams Possible:</th>
-                <th  class="gamehistorycol"scope="col">Pangrams Found:</th>
-                <th  class="gamehistorycol"scope="col">score:</th>
-                <th  class="gamehistorycol"scope="col">Max Point Value:</th>
-
-                
-                <th  class="gamehistorycol"scope="col">Replay me!</th>
-            </tr> 
-        </thead>
-        <tbody>
-            {% for game in games %}
-            {% if game.rating =="Genius" %}
-            <tr class="rowgenius">
-                <th scope="row">{{game.id}}</th>
-                <td>{{game.format_date()}}</td>
-                <td>&#127891 &#127891{{game.rating}}</td>
-                <td>{{game.letters}}</td>
-                <td>{{game.center_letter}}</td>
-                <td>{{game.guessed_words}}</td>
-                <td>{{game.num_words}}</td>
-                <td>{{game.num_valid_words}}</td>
-                <td>{{game.num_valid_words-game.num_words}}</td>
-                <td>{{game.valid_pangrams}}</td>
-                <td>{{game.guessed_pangrams}}</td>
-                <td>{{game.score}}</td>
-                <td>{{game.total_points}}</td>
-                <td><a href="/spellingbee/users/{{user.id}}/{{game.id}}">Replay This game</a></td>
-                
-            </tr>
-            {% elif game.rating =="Amazing" %}
-            <tr class="rowamazing">
-                <th scope="row">{{game.id}}</th>
-                <td>{{game.format_date()}}</td>
-                <td>&#127891{{game.rating}}</td>
-                <td>{{game.letters}}</td>
-                <td>{{game.center_letter}}</td>
-                <td>{{game.guessed_words}}</td>
-                <td>{{game.num_words}}</td>
-                <td>{{game.num_valid_words}}</td>
-                <td>{{game.num_valid_words-game.num_words}}</td>
-                <td>{{game.valid_pangrams}}</td>
-                <td>{{game.guessed_pangrams}}</td>
-                <td>{{game.score}}</td>
-                <td>{{game.total_points}}</td>
-                <td><a href="/spellingbee/users/{{user.id}}/{{game.id}}">Replay This game</a></td>
-                  
-            </tr>
-            {% elif game.rating =="Great" %}
-            <tr class="rowgreat">
-                <th scope="row">{{game.id}}</th>
-                <td>{{game.format_date()}}</td>
-                <td>&#128029 &#128029 &#128029{{game.rating}}</td>
-                <td>{{game.letters}}</td>
-                <td>{{game.center_letter}}</td>
-                <td>{{game.guessed_words}}</td>
-                <td>{{game.num_words}}</td>
-                <td>{{game.num_valid_words}}</td>
-                <td>{{game.num_valid_words-game.num_words}}</td>
-                <td>{{game.valid_pangrams}}</td>
-                <td>{{game.guessed_pangrams}}</td>
-                <td>{{game.score}}</td>
-                <td>{{game.total_points}}</td>
-                <td><a href="/spellingbee/users/{{user.id}}/{{game.id}}">Replay This game</a></td>
-            </tr>
-            {% elif game.rating =="Nice" %}
-            <tr class="rownice">
-                <th scope="row">{{game.id}}</th>
-                <td>{{game.format_date()}}</td>
-                <td>&#128029 &#128029{{game.rating}}</td>
-                <td>{{game.letters}}</td>
-                <td>{{game.center_letter}}</td>
-                <td>{{game.guessed_words}}</td>
-                <td>{{game.num_words}}</td>
-                <td>{{game.num_valid_words}}</td>
-                <td>{{game.num_valid_words-game.num_words}}</td>
-                <td>{{game.valid_pangrams}}</td>
-                <td>{{game.guessed_pangrams}}</td>
-                <td>{{game.score}}</td>
-                <td>{{game.total_points}}</td>
-                <td><a href="/spellingbee/users/{{user.id}}/{{game.id}}">Replay This game</a></td>
-            </tr>
-            {% elif game.rating =="Solid" %}
-            <tr class="rowsolid">
-                <th scope="row">{{game.id}}</th>
-                <td>{{game.format_date()}}</td>
-                <td>&#128029{{game.rating}}</td>
-                <td>{{game.letters}}</td>
-                <td>{{game.center_letter}}</td>
-                <td>{{game.guessed_words}}</td>
-                <td>{{game.num_words}}</td>
-                <td>{{game.num_valid_words}}</td>
-                <td>{{game.num_valid_words-game.num_words}}</td>
-                <td>{{game.valid_pangrams}}</td>
-                <td>{{game.guessed_pangrams}}</td>
-                <td>{{game.score}}</td>
-                <td>{{game.total_points}}</td>
-                <td><a href="/spellingbee/users/{{user.id}}/{{game.id}}">Replay This game</a></td>
-            </tr>
-            {% elif game.rating =="Good" %}
-            <tr class="rowgood">
-                <th scope="row">{{game.id}}</th>
-                <td>{{game.format_date()}}</td>
-                <td>{{game.rating}}</td>
-                <td>{{game.letters}}</td>
-                <td>{{game.center_letter}}</td>
-                <td>{{game.guessed_words}}</td>
-                <td>{{game.num_words}}</td>
-                <td>{{game.num_valid_words}}</td>
-                <td>{{game.num_valid_words-game.num_words}}</td>
-                <td>{{game.valid_pangrams}}</td>
-                <td>{{game.guessed_pangrams}}</td>
-                <td>{{game.score}}</td>
-                <td>{{game.total_points}}</td>
-                <td><a href="/spellingbee/users/{{user.id}}/{{game.id}}">Replay This game</a></td>
-            </tr>
-            {% elif game.rating =="Moving up" %}
-            <tr class="rowmovingup">
-                <th scope="row">{{game.id}}</th>
-                <td>{{game.format_date()}}</td>
-                <td>{{game.rating}}</td>
-                <td>{{game.letters}}</td>
-                <td>{{game.center_letter}}</td>
-                <td>{{game.guessed_words}}</td>
-                <td>{{game.num_words}}</td>
-                <td>{{game.num_valid_words}}</td>
-                <td>{{game.num_valid_words-game.num_words}}</td>
-                <td>{{game.valid_pangrams}}</td>
-                <td>{{game.guessed_pangrams}}</td>
-                <td>{{game.score}}</td>
-                <td>{{game.total_points}}</td>
-                <td><a href="/spellingbee/users/{{user.id}}/{{game.id}}">Replay This game</a></td>
-            </tr>
-            {% elif game.rating =="Good start" %}
-            <tr class="rowgoodstart">
-                <th scope="row">{{game.id}}</th>
-                <td>{{game.format_date()}}</td>
-                <td>{{game.rating}}</td>
-                <td>{{game.letters}}</td>
-                <td>{{game.center_letter}}</td>
-                <td>{{game.guessed_words}}</td>
-                <td>{{game.num_words}}</td>
-                <td>{{game.num_valid_words}}</td>
-                <td>{{game.num_valid_words-game.num_words}}</td>
-                <td>{{game.valid_pangrams}}</td>
-                <td>{{game.guessed_pangrams}}</td>
-                <td>{{game.score}}</td>
-                <td>{{game.total_points}}</td>
-                <td><a href="/spellingbee/users/{{user.id}}/{{game.id}}">Replay This game</a></td>
-            </tr>
-            {% elif game.rating =="Beginner" %}
-            <tr class="rowgbeginner">
-                <th scope="row">{{game.id}}</th>
-                <td>{{game.format_date()}}</td>
-                <td>{{game.rating}}</td>
-                <td>{{game.letters}}</td>
-                <td>{{game.center_letter}}</td>
-                <td>{{game.guessed_words}}</td>
-                <td>{{game.num_words}}</td>
-                <td>{{game.num_valid_words}}</td>
-                <td>{{game.num_valid_words-game.num_words}}</td>
-                <td>{{game.valid_pangrams}}</td>
-                <td>{{game.guessed_pangrams}}</td>
-                <td>{{game.score}}</td>
-                <td>{{game.total_points}}</td>
-                <td><a href="/spellingbee/users/{{user.id}}/{{game.id}}">Replay This game</a></td>
-            </tr>
-
-            {% endif %}
-            {% endfor %} 
-                
-        </tbody>
-       
-    </table>
-
-</div>
-
-<ul id="messagecontainer"></ul>
-
-
-<p>Thanks for browsing!</p>
+            <div id="boardstatuscontainer">
+                <h3 id="boardstatusheader">Current Hive Status</h3>
+                {% if session["game_id"] !="empty" %}
+                <div id="hivecontaineruserdetail">
+                    <svg xmlns="http://www.w3.org/2000/svg" id="hive2userdetail" class="hive" x="0" y="0" version="1.1" viewBox="0 0 499.772 499.772" width="45" height="45" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs">
+                        <path d="M492.692 223.646 394.345 52.979a53.123 53.123 0 0 0-46.08-26.667H151.572a53.12 53.12 0 0 0-46.08 26.027L7.145 223.006a53.333 53.333 0 0 0 0 53.333l98.347 170.667a53.332 53.332 0 0 0 46.08 26.453h196.693a53.334 53.334 0 0 0 46.08-25.813l98.347-170.667a53.76 53.76 0 0 0 0-53.333z" fill="#b8b7b6"></path>
+                        <text x="182" y="315" class="small text-dark">{{session["removed_center_letter"][0]}}</text>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" id="hive3userdetail" class="hive" x="0" y="0" version="1.1" viewBox="0 0 499.772 499.772" width="45" height="45" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs">
+                        <path d="M492.692 223.646 394.345 52.979a53.123 53.123 0 0 0-46.08-26.667H151.572a53.12 53.12 0 0 0-46.08 26.027L7.145 223.006a53.333 53.333 0 0 0 0 53.333l98.347 170.667a53.332 53.332 0 0 0 46.08 26.453h196.693a53.334 53.334 0 0 0 46.08-25.813l98.347-170.667a53.76 53.76 0 0 0 0-53.333z" fill="#b8b7b6"></path>
+                        <text x="182" y="315" id="hivetext" class="small text-dark">{{session["removed_center_letter"][1]}}</text>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" id="hive4userdetail" class="hive" x="0" y="0" version="1.1" viewBox="0 0 499.772 499.772" width="45" height="45" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs">
+                        <path d="M492.692 223.646 394.345 52.979a53.123 53.123 0 0 0-46.08-26.667H151.572a53.12 53.12 0 0 0-46.08 26.027L7.145 223.006a53.333 53.333 0 0 0 0 53.333l98.347 170.667a53.332 53.332 0 0 0 46.08 26.453h196.693a53.334 53.334 0 0 0 46.08-25.813l98.347-170.667a53.76 53.76 0 0 0 0-53.333z" fill="#b8b7b6"></path>
+                        <text x="182" y="315" class="small text-dark">{{session["removed_center_letter"][2]}}</text>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" id="hive1userdetail" class="centerhive" x="0" y="0" version="1.1" viewBox="0 0 499.772 499.772" width="45" height="45" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs">
+                        <path d="M492.692 223.646 394.345 52.979a53.123 53.123 0 0 0-46.08-26.667H151.572a53.12 53.12 0 0 0-46.08 26.027L7.145 223.006a53.333 53.333 0 0 0 0 53.333l98.347 170.667a53.332 53.332 0 0 0 46.08 26.453h196.693a53.334 53.334 0 0 0 46.08-25.813l98.347-170.667a53.76 53.76 0 0 0 0-53.333z" fill="rgba(238, 189, 22, 1)"></path>
+                        <text x="182" y="315" class="small text-dark">{{session["center_letter"]}}</text>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" id="hive5userdetail" class="hive" x="0" y="0" version="1.1" viewBox="0 0 499.772 499.772" width="45" height="45" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs">
+                        <path d="M492.692 223.646 394.345 52.979a53.123 53.123 0 0 0-46.08-26.667H151.572a53.12 53.12 0 0 0-46.08 26.027L7.145 223.006a53.333 53.333 0 0 0 0 53.333l98.347 170.667a53.332 53.332 0 0 0 46.08 26.453h196.693a53.334 53.334 0 0 0 46.08-25.813l98.347-170.667a53.76 53.76 0 0 0 0-53.333z" fill="#b8b7b6"></path>
+                        <text x="182" y="315" class="small text-dark">{{session["removed_center_letter"][3]}}</text>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" id="hive6userdetail" class="hive" x="0" y="0" version="1.1" viewBox="0 0 499.772 499.772" width="45" height="45" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs">
+                        <path d="M492.692 223.646 394.345 52.979a53.123 53.123 0 0 0-46.08-26.667H151.572a53.12 53.12 0 0 0-46.08 26.027L7.145 223.006a53.333 53.333 0 0 0 0 53.333l98.347 170.667a53.332 53.332 0 0 0 46.08 26.453h196.693a53.334 53.334 0 0 0 46.08-25.813l98.347-170.667a53.76 53.76 0 0 0 0-53.333z" fill="#b8b7b6"></path>
+                        <text x="182" y="315" class="small text-dark">{{session["removed_center_letter"][4]}}</text>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" id="hive7userdetail" class="hive" x="0" y="0" version="1.1" viewBox="0 0 499.772 499.772" width="45" height="45" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs">
+                        <path d="M492.692 223.646 394.345 52.979a53.123 53.123 0 0 0-46.08-26.667H151.572a53.12 53.12 0 0 0-46.08 26.027L7.145 223.006a53.333 53.333 0 0 0 0 53.333l98.347 170.667a53.332 53.332 0 0 0 46.08 26.453h196.693a53.334 53.334 0 0 0 46.08-25.813l98.347-170.667a53.76 53.76 0 0 0 0-53.333z" fill="#b8b7b6"></path>
+                        <text x="182" y="315" class="small text-dark">{{session["removed_center_letter"][5]}}</text>
+                    </svg>
+                </div>
+                <h4>Letters:{{session["letters"]}}</h4>
+                <h4>Center Letter:{{session["center_letter"]}}</h4>
+                <h4>Rating:{{session["rating"]}}</h4>
+                <h4>You have found:{{session["num_words"]}} words</h4>
+                {%else%}
+                <h4>No Current hive! Start a new game!</h4>
+                {% endif %}
+                <a class="btn btn-lg btn-dark gamecontrol boardstatusbtn" href=/spellingbee/users/{{user.id}}/game/continue>Continue Current Board</a>
+                <a class="btn btn-lg btn-dark gamecontrol boardstatusbtn" href=/spellingbee/users/{{user.id}}/game/new>Start A Fresh Board</a>
+            </div>
     
-{%endblock%}
+            <div id="profilecontainer">
+                <img class="img-thumbnail userprofileimg"  src="{{user.image}}" alt="User image">
+                <h4 id="profilestatsheader" class="text-white">{{user.username}}'s All Time Stats</h4>
+        
+                <table id="alltimestatstable" class="table table-dark table-sm table-bordered">
+                    <thead>
+                      <tr id="alltimestatstr">
+                        <th scope="col">Puzzles:{{user_game_count}}</th>
+                        <th scope="col">Total Words:{{user_word_total}}</th>
+                      </tr>
+                    </thead>
+                </table>
+                <table id="ratingsprofiletable" class="table table-dark table-sm table-bordered">
+                    <thead id="ratingsprofilethead">
+                        <th class="ratingsprofilecol" scope="col">Ranking:</th>
+                        <th  class="ratingsprofilecol" scope="col">Games</th> </thead>
+        
+                        <tr class="rowgenius"><th id="profilestatstableth" scope="col">&#127891 &#127891 Genius</th>
+                            <td id="profilestatstabletd">{{gamecount_genius}}</td>
+                        </tr>
+                        <tr class="rowamazing"><th id="profilestatstableth" scope="col">&#127891 Amazing </th>
+                            <td id="profilestatstabletd">{{gamecount_amazing}}</td>
+                        </tr>
+                        <tr class="rowgreat"><th id="profilestatstableth" scope="col">&#128029 &#128029 &#128029 Great</th>
+                            <td id="profilestatstabletd">{{gamecount_great}}</td>
+                        </tr>
+                        <tr class="rownice"><th id="profilestatstableth" scope="col">&#128029 &#128029 Nice</th>
+                            <td id="profilestatstabletd">{{gamecount_nice}}</td>
+                        </tr>
+                        <tr class="rowsolid"><th id="profilestatstableth" scope="col">&#128029 Solid</th>
+                            <td id="profilestatstabletd">{{gamecount_solid}}</td>
+                        </tr>
+                        <tr class="rowgood"><th id="profilestatstableth" scope="col">Good</th>
+                            <td id="profilestatstabletd">{{gamecount_good}}</td>
+                        </tr>
+                        <tr class="rowmovingup"><th id="profilestatstableth" scope="col">Moving up</th>
+                            <td id="profilestatstabletd">{{gamecount_moving_up}}</td>
+                        </tr>
+                        <tr class="rowgoodstart"><th id="profilestatstableth" scope="col">Good start</th>
+                            <td id="profilestatstabletd">{{gamecount_good_start}}</td>
+                        </tr>
+                        <tr class="rowbeginner"><th id="profilestatstableth" scope="col">Beginner</th>
+                            <td id="profilestatstabletd">{{gamecount_beginner}}</td>
+                        </tr>
+                </table>
+                <a class="btn btn-sm btn-outline-warning profilebtn" href="/spellingbee/users/{{user_id}}/edit">Edit User</a>
+                <form style="display: inline;" action="/spellingbee/users/{{user_id}}/delete" method="POST">
+                    <button class="btn btn-sm btn-outline-danger profilebtn" class="btn btn-sm btn-danger">Delete user</button>
+                    </form>
+                <!-- <a class="btn btn-sm btn-outline-danger profilebtn" href="/spellingbee/users/{{user_id}}/delete">Delete User</a> -->
+                <a class="btn btn-sm btn-dark profilebtn" href="/spellingbee/logout">Logout & Save</a>
+            </div>
+    
+        
+            <ul id="messagecontainer"></ul>
+        
+        
+            <p>Thanks for browsing!</p>
+        </div>
+            
+    {% with messages= get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <section class="messages">
+    {% for category,msg in messages %}
+    <p class="{{category}}">{{category}}: {{msg}}</p>
+    {% endfor %}
+    </section>
+    {%endif%}
+    {%endwith%}
+  </main>
+    
+    
+    <script src="https://unpkg.com/axios/dist/axios.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="
+https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js
+"></script>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
+
+

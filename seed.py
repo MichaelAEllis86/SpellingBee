@@ -9,17 +9,16 @@ db.create_all()
 
 default_user_imageURL="https://t4.ftcdn.net/jpg/04/35/29/29/360_F_435292900_BU8c1Uf9ZRA3j7EyP6kKfTXzpPt5dxDf.jpg"
 
-u1=User(username="Apop",  image=default_user_imageURL)
-u2=User(username="Toasty", image=default_user_imageURL)
-u3=User(username="Rosie", image=default_user_imageURL)
-u4=User(username="Daffy", image=default_user_imageURL)
-u5=User(username="Roomie", image="https://i.chzbgr.com/full/7889062656/h10C497C8/cat-spinning-on-a-roomba")
-u6=User(username="NoGames", image=default_user_imageURL)
+u1=User.register("Apop",default_user_imageURL,"carrot")
+u2=User.register("Toasty",default_user_imageURL,"vegetable")
+u3=User.register("Rosie",default_user_imageURL,"lettuce")
+u4=User.register("Daffy",default_user_imageURL,"radish")
+u5=User.register("Roomie","https://i.chzbgr.com/full/7889062656/h10C497C8/cat-spinning-on-a-roomba","spinach")
+u6=User.register("NoGames",default_user_imageURL,"arugula")
 
 
 db.session.add_all([u1,u2,u3,u4,u5,u6])
 db.session.commit()
-
 
 g1=Game(rating="Genius",guessed_words=["testword1"],valid_pangrams=["learning"],letters="gniearl", removed_center_letter="giearl",center_letter="n",user_id=1, guessed_pangrams=["learning"],all_valid_words=["testword2"], num_words=14, num_valid_words=29, score=75, total_points=150)
 g2=Game(rating="Solid",guessed_words=["testword1","testword2"],valid_pangrams=["there are none"],removed_center_letter="giearl",letters="aklectv",center_letter="k",user_id=2, guessed_pangrams=["learning"],all_valid_words=["testword2"], num_words=6, num_valid_words=27, score=75, total_points=150)

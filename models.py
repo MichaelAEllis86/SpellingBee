@@ -1,8 +1,11 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from flask_bcrypt import Bcrypt
 from sqlalchemy.dialects.postgresql import ARRAY
 
 db=SQLAlchemy()
+
+bcrypt=Bcrypt()
 
 def connect_db(app):
     db.app=app
@@ -25,16 +28,49 @@ class User(db.Model):
             "username": self.username,
             "image": self.image,
             }
+    @classmethod
+    def register(cls,username,pwd,image):
+        """Register user w/hashed password and return user."""
+        hashed=bcrypt.generate_password_hash(pwd)
+        #turn bytestring into normal (unicode utf8) string
+        hashed_utf8=hashed.decode("utf8")
+        #return instance of user with username, image, and hashed pwd
+        return cls(username=username, password=hashed_utf8, image=image)
+    
+    @classmethod
+    def edit_password(cls,pwd):
+        """Similar to register but just returns the hashed pw"""
+        hashed=bcrypt.generate_password_hash(pwd)
+        #turn bytestring into normal (unicode utf8) string
+        hashed_utf8=hashed.decode("utf8")
+        #return instance of user with username, image, and hashed pwd
+        return hashed_utf8
 
 
+    @classmethod
+    def authenticate(cls,username,pwd):
+        """validate that a user exists and password is correct
+        returns the user if valid, else returns False"""
+
+        user=User.query.filter_by(username=username).first()
+
+        if user and bcrypt.check_password_hash(user.password,pwd):
+            return user
+        else:
+            return False
+        
     id= db.Column(db.Integer,
                   primary_key=True,
                   autoincrement=True)
-    username=db.Column(db.String(20),
-                        nullable=False)
+    username=db.Column(db.String(50),
+                        nullable=False,
+                        unique=True)
+    password=db.Column(db.Text,
+                       nullable=False,
+                       unique=True)
     image=db.Column(db.Text,
                         nullable=False,
-                        default='https://tinyurl.com/demo-cupcake')
+                        default='https://t4.ftcdn.net/jpg/04/35/29/29/360_F_435292900_BU8c1Uf9ZRA3j7EyP6kKfTXzpPt5dxDf.jpg')
     # rating=db.Column(db.Float,
     #               nullable=False,
     #               default=0)

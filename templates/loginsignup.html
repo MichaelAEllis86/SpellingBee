@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/app.css">
+    <title> {% block title %}{% endblock %}</title>
+</head>
+<body class="loginbody"> 
+    <!-- <nav class="navbar navbar-light">
+    <a href="/">Home</a>
+    <a href="/clear">clear the session</a>
+    <a href="/spellingbee/users">User Directory</a>
+    <a href="/base">Base Template</a>
+    <a href="/spellingbee/loginsignup">Login/Signup page</a>
+    </nav> -->
+    <main id="content">
+        <div id=loginpagecontentcontainer>
+            <div id="loginheaderscontainer">
+                <h1 id="loginbeesheader"> &#127774 &#128029 &#128029 &#128029 &#127802</h1>
+                <h1 id="loginheader" class="loginpageheader">Flask Spellingbee</h1>
+                <h3>How many words can you make with 7 letters?</h3>
+                <div id="loginbuttonscontainer">
+                    {% if session["user_id"] %}
+                    <a id="logoutbtn" href="/spellingbee/logout" class="btn btn-lg btn-dark loginpagebtn">Logout</a>
+                    <button id="aboutbtn" class="btn btn-lg btn-dark loginpagebtn" type="submit">About</button>
+                    <a id="continuebtn" href="/spellingbee/users/{{session['user_id']}}" class="btn btn-lg btn-dark loginpagebtn">Continue</a>
+                    {%else%}
+                    <a id="loginbtn" href="/spellingbee/login" class="btn btn-lg btn-dark loginpagebtn" type="submit">Login</a>
+                    <button id="aboutbtn" class="btn btn-lg btn-dark loginpagebtn" type="submit">About</button>
+                    <button id="signupbtn" class="btn btn-lg btn-dark loginpagebtn" type="submit">Signup</button>
+                    {%endif%}
+                </div>
+                <p>&#128029Login or signup to play!&#128029</p>
+                {% for field in form 
+                    if field.widget.input_type != 'hidden'%}
+                    {% for error in field.errors %}
+                    <small class="form-text text-danger">{{error}}</small>
+                    {% endfor %}
+                    {% endfor %}
+                {% with messages= get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                <section class="messages">
+                {% for category,msg in messages %}
+                <p class="{{category}}">&#128029{{msg}}&#128029</p>
+                {% endfor %}
+                </section>
+                {%endif%}
+                {%endwith%}
+                <p>Thanks for browsing!</p>
+            </div>
+            <div id="aboutcontainer">
+                <button id="aboutclose" type="button" class="btn btn-dark btn-sm closewindowbtn">X</button>
+                <img id="samplehive" src="https://tinypic.host/images/2024/04/15/SpellingbeeSN.png" alt="SpellingbeeSN.png" border="0">
+                <h3 class="loginpageheader">&#127891About Flask Spellingbee&#127891</h3>
+                <h6><i>Create words, include the center letter (yellow) in the hive, score points and increase your game rank</i></h6>
+                <p>Welcome to Flask Spellingbee! Flask Spellingbee is a webgame application modeled after the New York Times word building game SpellingBee! 
+                    It has been created using <b>Python, Flask, Flask SQL-Alchemy, FlaskWTForms, postgreSQL, Javascript, CSS, Bootstrap, jQuery, and HTML.</b>
+                    The goal of the game is to <b>build as many words as possible from a pool of 7 letters. The center letter must always be used! Signup with a username, password, and avatar and start playing! </b>
+                </p>  
+                <ul><b><u>Features include:</u></b>
+                    <li><b>Random Game Generation:</b> Make and play new games at will through random generation of letter pools/hives! Every game is unique!</li>
+                    <li><b>Game Ranks:</b> The more words you make, the higher your score, and the higher your rank! The top level is genius &#127891 &#127891 </li>
+                    <li><b>No Time Limits:</b>A game can last as long as it needs to! If you want to get to genius you can keep playing as long as you want! However, you can always start anew if you get stuck!</li>
+                    <li><b>Game Saves:</b> Save your game at anytime from the gameboard! </li>
+                    <li><b>Replayability:</b>Replay any of your previous hives/boards at any time from your user hub! </li>
+                    <li><b>Hints:</b> get hints dynamically generated for the current game in our hints page (accessible from the gameboard!) (also includes rules and glossary) </li>
+                    <li><b>Stats:</b>get stats game by game such as rating, and number of words found, as well as user all-time totals on the user hub!</li>
+                    <li><b>Merriam-Webster Collegiate dictionary integration: </b>Search for words as you play! Check spellings, definitions, date of origin, and pronounciation if available</li>
+                    <li><b>Rules & Glossary: </b>A more detailed set of rules can be found on the game board, a glossary of terms can be found on the hints page!</li>
+
+                    
+                </ul>
+            </div>
+            <div id="signupformcontainer">
+                <button id="signupclose" type="button" class="btn btn-dark btn-sm closewindowbtn">X</button>
+                <div id="userformrow" class="row justify-content-center">
+                    <div id="userformcol" class="col-lg-10">
+                        <form id="userform" method="POST">
+                            <h5>Register a New User</h5>
+            
+                            {{form.hidden_tag()}}
+            
+                            {% for field in form 
+                            if field.widget.input_type != 'hidden'%}
+            
+                            <div class="form-group">  
+                                {{field.label(class_="text-dark font-weight-bold")}}
+                                {{field(class_="form-control-lg")}}
+            
+                                {% for error in field.errors %}
+                                <small class="form-text text-danger">{{error}}</small>
+                        
+                        {% endfor %}
+                            </div>
+                        {% endfor %}
+                    
+                            <button id="usersubmitbtn" class="btn btn-lg btn-dark loginpagebtn" type="submit">Signup</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+  </main>
+    
+    <script src="https://unpkg.com/axios/dist/axios.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="
+https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js
+"></script>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
+
+

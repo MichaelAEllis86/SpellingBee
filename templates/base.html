@@ -8,25 +8,22 @@
     <title> {% block title %}{% endblock %}</title>
 </head>
 <body> 
-    <nav class="navbar navbar-light">
-    <a href="/">Home</a>
-    <a href="/clear">clear the session</a>
+    <nav class="navbar navbar-dark justify-content-end">
+    <a class="navbar-brand" href="#">&#128029 Flask Spellingbee &#128029</a>
+    <a class="basenavlink nav-item nav-link active" href="/">Home</a>
+    <!-- <a href="/clear">clear the session</a>
     <a href="/spellingbee/users">User Directory</a>
-    <a href="/base">Base Template</a>
-
-
-    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown">
-        More
-      </a>
-      <div class="dropdown-menu">
-        <a class="dropdown-item" href="#">How to Play</a>
-        <a class="dropdown-item" href="#">Another action</a>
-        <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="#">Something else here</a>
-      </div>
-    </li>
+    <a href="/base">Base Template</a> -->
+    {% if session["user_id"] %}
+    <a class="basenavlink nav-item nav-link active" href="/spellingbee/logout">Logout</a>
+    <a class="basenavlink nav-item nav-link active" href="/spellingbee/users/{{session['user_id']}}">User Hub</a>
+    {%else%}
+    <a class="basenavlink nav-item nav-link active" href="/spellingbee/loginsignup">Login/Signup</a>
+    {%endif%}
+    {% if session["game_id"] !='empty' and session["user_id"] %}
+    <a class="basenavlink nav-item nav-link active" href="/spellingbee/users/{{session['user_id']}}/game/{{session['game_id']}}/hints">Hints</a>
     </nav>
-    <h1 id="basewelcome"> Welcome to Flask Spellingbee &#128029 &#128029 </h1>
+    {%endif%}    <!-- <h1 id="basewelcome"> Welcome to Flask Spellingbee &#128029 &#128029 </h1> -->
     <main id="content"> {%block content%}{% endblock %} 
     {% with messages= get_flashed_messages(with_categories=true) %}
     {% if messages %}
@@ -42,6 +39,10 @@
     
     <script src="https://unpkg.com/axios/dist/axios.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="
+https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js
+"></script>
+
     <script src="/static/app.js"></script>
 </body>
 </html>
