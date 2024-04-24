@@ -143,7 +143,7 @@ function displayDictionaryWords(responseWordData,searchWord){
 async function dictionarySearch(){
     const searchWord=$("#dictionarysearch").val()
     const response=await axios.get(`https://www.dictionaryapi.com/api/v3/references/collegiate/json/${searchWord}`,
-    {params:{key:apiKey}})
+    {params:{key:"13b41308-060f-495a-8411-8686570431a6"}})
     data=response.data
     console.log(data)
     displayDictionaryWords(data,searchWord)
@@ -189,6 +189,11 @@ $("#hintsnavbutton").click(function(){
 })
 
 
+$("#spoilerbutton").click(function(){
+    console.log("clicked! inside the spoiler button toggle button evt listener" )
+    $("#all_valid_words_container").toggleClass("hidden")
+    $("#guessed_words_container").toggleClass("hidden")
+})
 
 $("#togglebuttonrules").click(function(){
     console.log("clicked! inside the button toggle evt listener for game rules" )

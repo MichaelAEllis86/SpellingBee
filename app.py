@@ -91,7 +91,7 @@ def assign_sessions_for_db(user_id):
 def evaluate_rating(num_of_points, total_num_points):
         """Determines ranks for a given point value, given a known total amount of points possible from the board.
         Ranks are based on the percentage of possible points in a puzzle.
-        Example: A rating of Genius has a minimum point threshold of 90% of the total points.
+        Example: A rating of Genius has a minimum point threshold of 90% of the total points so 90/100 total points =rating Genius.
         Amazing however would apply between 80-90% ranks"""
         percentage_score=num_of_points/total_num_points
         if percentage_score >= 0.9:
@@ -168,7 +168,7 @@ def get_words_by_letter(wordlst):
     return num_valid_words_by_letter
 
 def get_words_by_length(wordlst):
-    """Creates a dictionary to store the lengths of each valid words in a hive, and then how many times a word of a given length appear in the hive's valid word list.
+    """Creates a dictionary to store the lengths of each valid words in a hive, and then how many times a word of a given length appears in the hive's valid word list.
     final output is a dictionary with a number of letters a word has as a key, then a value that corresponds to the amount of times a 4 letter word appears in the valid word list
      EX output {"4":20, "5":10, "6":3} meaning that there are 20 4 letter words, 10 5 letter words, and 3 6 letter words in that puzzle """
     word_length_counts={}
@@ -182,7 +182,7 @@ def get_words_by_length(wordlst):
 
 def validate_word_from_session(wordguess):
     """ This Function validates a wordguess from the user and gives feedback depending on if the word is valid or not!
-    All validity evaluation from this function is based upon session data!!! The Functionupdates scoring parameters in session
+    All validity evaluation from this function is based upon session data!!! The Function also updates scoring parameters in session
     including, score, rating, pangrams, guessed_words and num_words"""
 
     length_check=len(wordguess) >= 4

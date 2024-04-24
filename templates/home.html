@@ -74,10 +74,11 @@
 
     <div id="gameinfocontainer" class="gamecontainer">
         <div id="gameinfobtncontainer">
-            <button class="btn btn-warning" type="button" id="togglebutton">
+            <button class="btn btn-warning btn-hints" type="button" id="togglebutton">
             Display Words
             </button>
             <button class=" btn btn-dark btn-hints" id="hintsnavbutton">Reveal Hints</button>
+            <button class=" btn btn-danger btn-hints" id="spoilerbutton">Spoilers</button>
         </div>
 
       
@@ -94,6 +95,15 @@
             <li class="foundword">{{word}}</li>
             {% endfor %}
         </div>
+        <div id=all_valid_words_container class="hidden">
+            <h4 id="spoilerheader">Spoiler Alert! here is the full list of valid words for this puzzle</h4>
+            <br>
+            {% set sorted_spoilers=session['all_valid_words'] | sort %}
+            {% for word in sorted_spoilers %}
+            <li class="foundword">{{word}}</li>
+            {% endfor %}
+        </div>
+        
         <div id="hintsgamepagecontainer" class="hidden">
             <h3 class="hintheader">Words by letter for your current Hive</h3>
             <table id="gamehistorytable" class="table table-hover table-sm table-bordered">
@@ -125,7 +135,7 @@
     <div id="additionalinfocontainer" class="gamecontainer">
         <button class="btn btn-warning" type="button" id="togglebuttondictionary">
             Dictionary Bar <i>powered by:</i>
-            <img src="https://dictionaryapi.com/images/MWLogo_120x120.png">
+            <img id="merriam-webster" src="https://dictionaryapi.com/images/info/branding-guidelines/MWLogo_LightBG_120x120_2x.png">
             <p id="dictionarybartext">Not sure of a word? Check it below!</p>
         </button>
         <form class="form-inline"  action="#" id="dictionaryform">

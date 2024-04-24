@@ -202,7 +202,7 @@ class SpellingBee():
         word_exists_check=wordguess in self.no_s_words
         # print(f"the word exists check is {word_exists_check}")
         
-        letter_check_results=all({letter in self.letters for letter in wordguess})
+        letter_check_results=all({letter in self.letters for letter in wordguess}) 
         # print(f"letter_check_results are {letter_check_results}")
 
         if length_check== False:
