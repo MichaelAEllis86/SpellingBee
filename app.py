@@ -228,6 +228,7 @@ no_s_words=word_list_init("words.txt")
 
 #<-----------Utility routes for testing and development purposes are below These Can be delete safely if noted----------->
 
+#nonessential route, just there to clear game data from the sesssion
 @app.route("/clear")
 def clear_session_and_redirect():
     """Clears all game data from the session, redirects to home"""
@@ -241,7 +242,7 @@ def show_base():
     """show base template page for reference"""
     return render_template("base.html")
 
-#delete me later
+#delete me later useless as of 4/28/24
 @app.route("/old")
 def generate_and_show_game():
     """Displays the board with a guess form , updates session with game parameters"""
@@ -332,6 +333,7 @@ def generate_and_show_game():
 def redirect_to_loginsignup():
     return redirect("/spellingbee/loginsignup")
 
+#need to add logic to this route to handle duplicate user names and duplicate passwords! Could setup a quick query on the form data and see if it grabs anything from the db! if so flash message the user that that username or pwd has been taken!
 @app.route("/spellingbee/loginsignup", methods=["GET", "POST"])
 def show_loginsignup_page():
     """Shows login and singup page in GET route. In POST route handles the submission of the signup form to save a new user into the Users db model/users table"""
@@ -386,7 +388,7 @@ def logout():
         return redirect("/spellingbee/loginsignup")
 
     
-#loginform page and login handle form
+#loginform page and login handle form 
 @app.route("/spellingbee/login", methods=["GET","POST"])
 def validate_login_redirect():
    """renders lightweight form page for login via GET.
@@ -739,6 +741,11 @@ def validate_word():
                     "removed_center_letter":session["removed_center_letter"],
                     "game_id":session["game_id"]
                     })
+
+@app.errorhandler(404)
+def page_not_found(e):
+    """Renders our custom 404 page if anything isn't found such as a missing user/game"""
+    return render_template('404.html', error=e), 404
 
                    
 # @app.route("/showcupcakes")
