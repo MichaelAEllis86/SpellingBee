@@ -8,7 +8,6 @@ from form import Guessform, Userform, Dictionaryform, Loginform
 from flask_bcrypt import Bcrypt
 
 app=Flask(__name__)
-app.app_context().push()
 # set environment variable to NOTTEST if were working the real DB in app.py, if we are in test mode in test.py this variable is set to "TEST" and we use the test database
 # app.config['SQLALCHEMY_DATABASE_URI']='postgresql:///cupcakes' if os.environ.get("TEST", "NOTTEST") == "NOTTEST" else 'postgresql:///test_cupcakes' 
 # app.config['SQLALCHEMY_DATABASE_URI']='postgresql:///spellingbee_db'
