@@ -33,7 +33,31 @@ Using the application is simple! Head over to https://flask-spellingbee.onrender
 - **Unique scoring implementation for pangrams and perfect pangrams:** Pangrams are special words that use every letter in the hive! Perfect panagrams use each letter EXACTLY ONCE. As these words are unique and deserving of special distinction they also deserve special scoring! Currently updating the scoring system to account for pangram and perfect pangram scoring to reflect the rarity of these words.
 - **Click hive integration:** working on updating the game hive ui so that clicking a letter/honeycomb will also enter that letter into the guess in addition to normal typing.
 
-## :honeybee: Construction & Requirments :honeybee:
+## :honeybee: Construction & Requirements :honeybee:
+
+Flask-Spellingbee was constructed using Python, Flask, Postgres, SQLAlchemy, Javascript, Bootstrap, Jquery, lodash, CSS, and HTML. See below for python/pip packages listed individually.
+
+bcrypt==4.1.2
+blinker==1.7.0
+click==8.1.7
+Flask==3.0.0
+Flask-Bcrypt==1.0.1
+Flask-DebugToolbar==0.14.1
+Flask-SQLAlchemy==3.1.1
+Flask-WTF==1.2.1
+greenlet==3.0.3
+gunicorn==22.0.0
+itsdangerous==2.1.2
+Jinja2==3.1.2
+MarkupSafe==2.1.3
+packaging==23.2
+postgres==4.0
+psycopg2-binary==2.9.9
+psycopg2-pool==1.2
+SQLAlchemy==2.0.25
+typing_extensions==4.9.0
+Werkzeug==3.0.1
+WTForms==3.1.2
 
 
 
