@@ -32,6 +32,7 @@ Using the application is simple! Head over to (https://flask-spellingbee.onrende
 ## :honeybee: Features Under Construction :honeybee:
 - **Unique scoring implementation for pangrams and perfect pangrams:** Pangrams are special words that use every letter in the hive! Perfect panagrams use each letter EXACTLY ONCE. As these words are unique and deserving of special distinction they also deserve special scoring! Currently updating the scoring system to account for pangram and perfect pangram scoring to reflect the rarity of these words.
 - **Click hive integration:** working on updating the game hive ui so that clicking a letter/honeycomb will also enter that letter into the guess in addition to normal typing.
+- **Letter grid for hints:** adding combined grid/table of the two existing hints tables. 
 
 ## :honeybee: Construction & Requirements :honeybee:
 
