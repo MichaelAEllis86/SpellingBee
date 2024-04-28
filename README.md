@@ -1,6 +1,6 @@
 # :honeybee: Flask-Spellingbee :honeybee:
 ### *A wordbuilder web application game modeling the New York Times Spellingbee*
-### Deployed at : https://flask-spellingbee.onrender.com
+### (Deployed at : https://flask-spellingbee.onrender.com)
 #### Springboard SEC Capstone #1 by Michael Ellis
 
 ## :honeybee: About :honeybee:
@@ -9,7 +9,7 @@ Welcome to Flask Spellingbee! Flask Spellingbee is a webgame application modeled
 
 ## :honeybee: Instructions/User Flow :honeybee:
 
-Using the application is simple! Head over to https://flask-spellingbee.onrender.com to play the current deployment of the game! Make an account with a username, password, and image url/avatar and signin/signup. On the following page, choose the start a fresh board button and then begin playing! You'll be redirected to the game UI page. See a Sample image of the game ui below! The user can then start submitting their words via the guessform. 
+Using the application is simple! Head over to (https://flask-spellingbee.onrender.com) to play the current deployment of the game! Make an account with a username, password, and image url/avatar and signin/signup. On the following page, choose the start a fresh board button and then begin playing! You'll be redirected to the game UI page. See a Sample image of the game ui below! The user can then start submitting their words via the guessform. 
 
 *Some valid words for the hive/board below would be "cool" "roll" "yell" "yelled" for example*
 
