@@ -1,20 +1,27 @@
-{% extends "base.html" %}
-{% block title %} 404! {% endblock %}
-{% block content %}
-
-
-<div>
-<h4>{{error}}</h4>
-
-<iframe src="https://giphy.com/embed/gQDazMXigdtD2" width="480" height="309" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/epic-down-shut-gQDazMXigdtD2">via GIPHY</a></p>
-
-<a class="btn btn-sm btn-warning" href="/">Back to homepage!</a>
-
-<ul id="messagecontainer"></ul>
-
-<p>Thanks for browsing!</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/app.css">
+    <title>404 page</title>
+</head>
+<body class="loginbody">
+    <div>
+        <h4>{{error}}</h4>
+        
+        <iframe src="https://giphy.com/embed/gQDazMXigdtD2" width="480" height="309" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/epic-down-shut-gQDazMXigdtD2">via GIPHY</a></p>
+        
+        <a class="btn btn-sm btn-warning" href="/">Back to homepage!</a>
+        
+        <ul id="messagecontainer"></ul>
+        
+        <p>Thanks for browsing!</p>
+        
+    </div>
     
 </body>
+</html>
 
-</div>
-{% endblock %}
+
