@@ -11,10 +11,20 @@ app=Flask(__name__)
 # set environment variable to NOTTEST if were working the real DB in app.py, if we are in test mode in test.py this variable is set to "TEST" and we use the test database
 # app.config['SQLALCHEMY_DATABASE_URI']='postgresql:///cupcakes' if os.environ.get("TEST", "NOTTEST") == "NOTTEST" else 'postgresql:///test_cupcakes' 
 # app.config['SQLALCHEMY_DATABASE_URI']='postgresql:///spellingbee_db'
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "postgresql://wenebuqq:kGvlOQis5vwIWAW9RCJKDz83L2DIDiTd@kala.db.elephantsql.com/wenebuqq")
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "postgresql://wenebuqq:kGvlOQis5vwIWAW9RCJKDz83L2DIDiTd@kala.db.elephantsql.com/wenebuqq")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']= False
 app.config['SQLALCHEMY_ECHO']= True
 # app.config['SQLALCHEMY_ECHO']= True if os.environ.get("TEST", "NOTTEST") == "NOTTEST" else False
+db_url = os.environ.get("DATABASE_URL")
+
+if not db_url:
+    raise RuntimeError("DATABASE_URL is not set")
+
+# Fix potential postgres:// issue
+if db_url.startswith("postgres://"):
+    db_url = db_url.replace("postgres://", "postgresql://", 1)
+
+app.config["SQLALCHEMY_DATABASE_URI"] = db_url
 app.config['SECRET_KEY']="oh-so-secret"
 debug=DebugToolbarExtension(app)
 

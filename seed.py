@@ -2,8 +2,12 @@ from models import User,Game, db
 from app import app
 
 #create all tables
-db.drop_all()
-db.create_all()
+with app.app_context():
+    db.drop_all()
+    db.create_all()
+
+# db.drop_all()
+# db.create_all()
 
 #imageURL strings
 

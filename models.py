@@ -58,6 +58,17 @@ class User(db.Model):
             return user
         else:
             return False
+    #TO DO implement this function on the user signup route.
+    @classmethod 
+    def check_user_exists(cls,username):
+        """Validates that a user exists returns true if so, false if not! Using this simple check to see if a username exists in the db before a user signs up with a duplicate user name.
+         Duplicate usernames will cause pycopig/db errors """
+        user=User.query.filter_by(username=username).first()
+
+        if user:
+            return True
+        else:
+            return False
         
     id= db.Column(db.Integer,
                   primary_key=True,
